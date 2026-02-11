@@ -30,7 +30,7 @@ router.post("/login", (req, res) => {
 
     const token = jwt.sign(data, JWT_SECRET);
 
-    res.send(token);
+    res.status(200).json({authToken: token});
 });
 
 export default router;
