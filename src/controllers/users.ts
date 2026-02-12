@@ -1,15 +1,21 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthRequest } from '../types/auth';
 
-export const getUserById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+export const getUserById = async (req: AuthRequest, res: Response) => {
+  const reqId = Number(req.params.id);
+  const userId = Number(req.user?.userId);
 
-  if (!id) {
+  if (!reqId) {
     return res.status(400).json({ message: 'User ID is required' });
+  }
+
+  if (userId !== reqId) {
+    return res.status(401).json({ message: `Unauthorized to access user with ID ${reqId}.` });
   }
 
   // TODO: Integrate DB
   const user = {
-    id,
+    userId: userId,
     username: 'testuser'
   };
 

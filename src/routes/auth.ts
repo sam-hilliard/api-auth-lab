@@ -20,6 +20,7 @@ router.post("/login", (req, res) => {
         return res.status(400).json({ message: 'Username and password are required' });
     }
 
+    // TODO: Use DB for real auth
     if (username !== 'testuser' || password !== 'testpassword') {
         return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -28,6 +29,7 @@ router.post("/login", (req, res) => {
         userId: 12,
     }
 
+    // TODO: Add token expiration
     const token = jwt.sign(data, JWT_SECRET);
 
     res.status(200).json({authToken: token});
