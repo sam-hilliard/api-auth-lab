@@ -7,3 +7,9 @@ export interface AuthRequest extends Request {
 export interface UserPayload  {
     userId: Number,
 };
+
+export interface User {
+    id: number,
+    username: string,
+    password: string
+}

@@ -2,7 +2,10 @@ import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 const router = Router();
 
-router.post("/login", (req, res) => {
+import { findUserByUsername } from '../services/userService';
+import { User } from '../types/auth';
+
+router.post("/login", async (req, res) => {
 
     const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -20,13 +23,16 @@ router.post("/login", (req, res) => {
         return res.status(400).json({ message: 'Username and password are required' });
     }
 
-    // TODO: Use DB for real auth
-    if (username !== 'testuser' || password !== 'testpassword') {
-        return res.status(401).json({ message: 'Invalid credentials' });
+    
+    const userQueryResult: User | null = await findUserByUsername(username);
+
+    if (!userQueryResult || userQueryResult.password !== password) {
+        return res.status(401).json({ message: 'Invalid username or password' });
     }
- 
+
     let data = {
-        userId: 12,
+        userId: userQueryResult.id,
+        userName: userQueryResult.username
     }
 
     // TODO: Add token expiration

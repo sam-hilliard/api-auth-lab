@@ -4,7 +4,7 @@
   "description": "An intentionally vulnerable API to practice writing secure code.",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "docker compose --env-file .env -f ./docker/docker-compose.yml up -d db && nodemon",
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "jest"

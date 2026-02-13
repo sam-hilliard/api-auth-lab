@@ -1,14 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { Pool } from 'pg';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 
 dotenv.config();
-
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
 
 const app = express();
 app.use(express.json());
