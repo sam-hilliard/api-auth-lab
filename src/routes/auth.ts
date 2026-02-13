@@ -1,17 +1,9 @@
 import { Router } from 'express';
-import jwt from 'jsonwebtoken';
+import { signToken } from '../utils/jwt';
+import { login, signup } from '../services/authService';
 const router = Router();
 
-import { findUserByUsername } from '../services/userService';
-import { User } from '../types/auth';
-
 router.post("/login", async (req, res) => {
-
-    const JWT_SECRET = process.env.JWT_SECRET;
-
-    if (!JWT_SECRET) {
-        throw new Error('JWT_SECRET is not defined');
-    }
     
     if (!req.body) {
         return res.status(400).json({ message: 'Request body is required' });
@@ -23,22 +15,47 @@ router.post("/login", async (req, res) => {
         return res.status(400).json({ message: 'Username and password are required' });
     }
 
-    
-    const userQueryResult: User | null = await findUserByUsername(username);
+    const user = await login(username, password);
 
-    if (!userQueryResult || userQueryResult.password !== password) {
+    if (!user) {
         return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    let data = {
-        userId: userQueryResult.id,
-        userName: userQueryResult.username
+    const data = {
+        userId: user.id,
+        userName: user.username
     }
 
-    // TODO: Add token expiration
-    const token = jwt.sign(data, JWT_SECRET);
-
+    const token = signToken(data);
     res.status(200).json({authToken: token});
+});
+
+router.post("/signup", async (req, res) => {
+
+    if (!req.body) {
+        return res.status(400).json({ message: 'Request body is required' });
+    }
+
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ message: 'Username and password are required' });
+    }
+
+    const user = await signup(username, password);
+
+    if (!user) {
+        throw new Error('Failed to register user.');
+    }
+   
+    let data = {
+        userId: user.id,
+        userName: user.username
+    }
+
+    const token = signToken(data)
+
+    res.status(200).json({userId: user.id, userName: user.username, authToken: token});
 });
 
 export default router;

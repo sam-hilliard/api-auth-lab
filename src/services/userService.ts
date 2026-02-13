@@ -18,3 +18,11 @@ export const findUserByUsername = async (username: string): Promise<User | null>
 
   return result.rows[0] ?? null;
 };
+
+export const createUser = async (username: string, hashedPassword: string) => {
+    const result = await pool.query<User>(
+        'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username',
+        [username, hashedPassword]
+    );
+    return result.rows[0];
+}
