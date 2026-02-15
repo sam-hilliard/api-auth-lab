@@ -45,7 +45,7 @@ router.post("/signup", async (req, res) => {
     const user = await signup(username, password);
 
     if (!user) {
-        throw new Error('Failed to register user.');
+        return res.status(400).json({ message: 'Username already exists' });
     }
    
     let data = {

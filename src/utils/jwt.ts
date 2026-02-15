@@ -12,6 +12,5 @@ export function signToken(payload: JwtPayload) {
     throw new Error('JWT_SECRET is not defined');
     }
 
-    // TODO: add expiration
-    return jwt.sign(payload, JWT_SECRET);
+    return jwt.sign(payload, JWT_SECRET, {expiresIn: '15m'});
 }
