@@ -11,12 +11,15 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS orgs (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name TEXT NOT NULL,
-    owner_id INTEGER NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
-    CONSTRAINT fk_owner
-        FOREIGN KEY (owner_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE
+/* Org Members Table */
+CREATE TABLE org_members (
+    org_id INTEGER NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role TEXT NOT NULL CHECK (role IN ('owner', 'member')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    PRIMARY KEY (org_id, user_id)
 );
