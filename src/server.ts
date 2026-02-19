@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import orgRoutes from './routes/orgs'
+import { authenticateToken } from './middleware/auth';
 import { Request, Response, NextFunction } from 'express';
 
 dotenv.config();
@@ -10,8 +11,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/orgs', orgRoutes);
+app.use('/api/users', authenticateToken, userRoutes);
+app.use('/api/orgs', authenticateToken, orgRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
