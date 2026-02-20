@@ -5,7 +5,7 @@ export interface AuthRequest extends Request {
 }
 
 export interface UserPayload  {
-    userId: Number,
+    userId: number,
 };
 
 export interface User {

@@ -21,11 +21,11 @@ export const addMember = async (orgId: number, userId: number, role: string) => 
     );
 
   const org = await getOrg(orgId);
-    const members = await getMembers(orgId);
-    return {
-        ...org,
-        members
-    }
+  const members = await getMembers(orgId);
+  return {
+      ...org,
+      members
+  }
 };
 
 export const isOwner = async (orgId: number, userId: number) => {
