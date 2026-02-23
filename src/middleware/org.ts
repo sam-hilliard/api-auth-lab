@@ -1,7 +1,10 @@
-import { Response, NextFunction } from 'express';
-import { getOrg } from '../services/orgService';
-import { isMemberExists } from '../services/orgService';
-import { isOwner } from '../services/orgService';
+import { Request, Response, NextFunction } from 'express';
+import {
+  getOrg,
+  isMemberExists,
+  isOwner,
+} from '../services/orgService'
+import { findUserByUsername } from '../services/userService';
 import { OrgRequest } from '../types/org';
 
 export async function requireOrg(
@@ -51,6 +54,26 @@ export async function requireOwner(
   if (!(await isOwner(orgId, userId))) {
     return res.status(403).json({ message: 'Only owners allowed' });
   }
+
+  next();
+}
+
+export async function requireTargetMember(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const orgId = Number(req.params.orgId);
+  const targetUsername = String(req.params.username);
+
+  const findUser = await findUserByUsername(targetUsername);
+  const targetUserId = Number(findUser?.id);
+
+  if (!(await isMemberExists(orgId, targetUserId))) {
+    return res.status(404).json({ message: `${targetUsername} is not in org` });
+  }
+
+  (req as any).targetUser = findUser?.username;
 
   next();
 }

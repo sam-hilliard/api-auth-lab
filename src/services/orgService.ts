@@ -60,3 +60,13 @@ export const getMembers = async (orgId: number) => {
 
     return result.rows;
 };
+
+export const removeMember = async (orgId: number, userId: number) => {
+  const deleteResult = await pool.query(
+    `DELETE FROM org_members
+     WHERE org_id = $1 AND user_id = $2`,
+    [orgId, userId]
+  );
+
+  return deleteResult.rowCount === 1;
+};
