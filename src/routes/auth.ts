@@ -6,19 +6,19 @@ const router = Router();
 router.post("/login", async (req, res) => {
     
     if (!req.body) {
-        return res.status(400).json({ message: 'Request body is required' });
+        return res.status(400).json({ error: 'Request body is required' });
     }
 
     const { username, password } = req.body; 
 
     if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required' });
+        return res.status(400).json({ error: 'Username and password are required' });
     }
 
     const user = await login(username, password);
 
     if (!user) {
-        return res.status(401).json({ message: 'Invalid username or password' });
+        return res.status(401).json({ error: 'Invalid username or password' });
     }
 
     const data = {
@@ -33,19 +33,19 @@ router.post("/login", async (req, res) => {
 router.post("/signup", async (req, res) => {
 
     if (!req.body) {
-        return res.status(400).json({ message: 'Request body is required' });
+        return res.status(400).json({ error: 'Request body is required' });
     }
 
     const { username, password } = req.body;
 
     if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required' });
+        return res.status(400).json({ error: 'Username and password are required' });
     }
 
     const user = await signup(username, password);
 
     if (!user) {
-        return res.status(400).json({ message: 'Username already exists' });
+        return res.status(400).json({ error: 'Username already exists' });
     }
    
     let data = {
