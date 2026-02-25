@@ -28,3 +28,15 @@ export const queryUsersByName = async(username: String) => {
 
   return result.rows;
 }
+
+export const reqUserById = async(authToken: String, userId: number) => {
+  return await request(app).get(`/api/users/${userId}`).set('Authorization', `Bearer ${authToken}`);;
+}
+
+export const parseJwt = (token: String) => {
+    return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+}
+
+export const getUserIdFromToken = (token: String) => {
+    return parseJwt(token).userId;
+}

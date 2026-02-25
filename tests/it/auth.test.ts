@@ -4,8 +4,11 @@ import {
     loginReq, 
     buildUser, 
     queryUsersByName,
-    cleanUpDB
+    cleanUpDB,
+    reqUserById,
+    getUserIdFromToken
 } from '../helpers/utils';
+import { getUserById } from '../../src/controllers/users';
 
 describe('Authentication: Signup', () => {
 
@@ -53,7 +56,6 @@ describe('Authentication: Signup', () => {
 });
 
 describe('Authentication: Login', () => {
-  // define in outer scope so both beforeAll and it can use the same user
   let testuser: { username: string; password: string };
 
   beforeAll(async () => {
@@ -84,5 +86,46 @@ describe('Authentication: Login', () => {
     expect(loginRes.body).toMatchObject({
       error: expect.any(String),
     });
+  });
+});
+
+describe('Authentication: JWT', () => {
+  
+  let testuser: { username: string; password: string };
+  let token: string;
+  let userId: number;
+
+  beforeAll(async () => {
+    testuser = buildUser();
+    const signupRes = await signUpReq(testuser.username, testuser.password);
+    expect(signupRes.status).toBe(200);
+    token = signupRes.body.authToken;
+    userId = signupRes.body.userId;
+  });
+
+  it('should access protected route with valid JWT', async () => {
+    const res = await reqUserById(token, userId);
+    expect(res.status).toBe(200);
+    expect(res.body).not.toMatchObject({error: expect.any(String)});
+  });
+
+  it('should not access protected route with invalid JWT', async () => {
+    const invalidJWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJOYW1lIjoidGVzdHVzZXIiLCJpYXQiOjE3NzE4NjI3NDAsImV4cCI6MTc3MTg2MzY0MH0.x';
+    const res = await reqUserById(invalidJWT, userId);
+    expect(res.status).toBe(403); 
+    expect(res.body).toMatchObject({error: expect.any(String)});
+  });
+
+  it('should not access protected route with expired JWT', async () => {
+    const expiredJWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJOYW1lIjoidGVzdHVzZXIiLCJpYXQiOjE3NzE4NjI3NDAsImV4cCI6MTc3MTg2MzY0MH0.IBsJvu5Gx5WwNu1MGdc0-syNp-eMGZ78rYJR84OKvBU';
+    const res = await reqUserById(expiredJWT, userId);
+    expect(res.status).toBe(403); 
+    expect(res.body).toMatchObject({error: expect.any(String)});
+  });
+
+  it('should not access protected route with no JWT', async () => {
+    const res = await reqUserById('', userId);
+    expect(res.status).toBe(403); 
+    expect(res.body).toMatchObject({error: expect.any(String)});
   });
 });
