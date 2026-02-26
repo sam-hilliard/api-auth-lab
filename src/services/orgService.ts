@@ -30,6 +30,7 @@ export const addMember = async (orgId: number, userId: number, role: string) => 
 
 export const isOwner = async (orgId: number, userId: number) => {
     const member = await getMember(orgId, userId);
+    if (!member) return false;
     return member.role === 'owner';
 };
 

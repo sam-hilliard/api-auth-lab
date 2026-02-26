@@ -52,7 +52,7 @@ export async function requireOwner(
   const orgId = Number(req.params.orgId);
 
   if (!(await isOwner(orgId, userId))) {
-    return res.status(403).json({ message: 'Only owners allowed' });
+    return res.status(403).json({ error: 'Must have owner permissions' });
   }
 
   next();
@@ -70,7 +70,7 @@ export async function requireTargetMember(
   const targetUserId = Number(findUser?.id);
 
   if (!(await isMemberExists(orgId, targetUserId))) {
-    return res.status(404).json({ message: `${targetUsername} is not in org` });
+    return res.status(404).json({ error: `${targetUsername} is not in org` });
   }
 
   (req as any).targetUser = findUser?.username;
