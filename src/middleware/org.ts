@@ -15,13 +15,13 @@ export async function requireOrg(
   const orgId = Number(req.params.orgId);
 
   if (isNaN(orgId)) {
-    return res.status(400).json({ message: 'Invalid org id' });
+    return res.status(400).json({ error: 'Invalid org id' });
   }
 
   const org = await getOrg(orgId);
 
   if (!org) {
-    return res.status(404).json({ message: 'Org not found' });
+    return res.status(404).json({ error: 'Org not found' });
   }
 
   req.org = org;

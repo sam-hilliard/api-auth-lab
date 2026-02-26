@@ -145,4 +145,38 @@ describe('Org: Invite User', () => {
       error: expect.any(String)
     });
   });
+
+  it('should return 404 if org does not exist', async () => {
+    const owner = await createTestUser();
+    const member = await createTestUser();
+
+    const inviteRes = await inviteOrgMemberReq(
+      404,
+      member.username,
+      owner.authToken
+    );
+
+    expect(inviteRes.status).toBe(404);
+    expect(inviteRes.body).toMatchObject({
+      error: expect.any(String)
+    });
+  });
+
+  it('should return 404 if user does not exist', async () => {
+    const owner = await createTestUser();
+
+    const orgRes = await createOrgReq(owner.authToken, 'Test Org');
+    const orgId = orgRes.body.id;
+
+    const inviteRes = await inviteOrgMemberReq(
+      orgId,
+      'does-not-exist',
+      owner.authToken
+    );
+
+    expect(inviteRes.status).toBe(404);
+    expect(inviteRes.body).toMatchObject({
+      error: expect.any(String)
+    });
+  });
 });
