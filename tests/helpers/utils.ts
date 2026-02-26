@@ -2,10 +2,11 @@ import request from 'supertest';
 import app from '../../src/app';
 import { pool } from '../../src/db';
 import { User } from '../../src/types/auth';
+import { AuthenticatedTestUser, TestUserCredentials } from './types';
 
 export const cleanUpDB = async () => {
-    await pool.query('TRUNCATE users, orgs, org_members RESTART IDENTITY CASCADE');
-}
+    await pool.query('TRUNCATE org_members, orgs, users RESTART IDENTITY CASCADE');
+};
 
 export const buildUser = () => ({
   username: `user_${Date.now()}`,
@@ -39,4 +40,23 @@ export const parseJwt = (token: String) => {
 
 export const getUserIdFromToken = (token: String) => {
     return parseJwt(token).userId;
+}
+
+export const createOrgReq = async( authToken: String, orgName: String) => {
+  return await request(app).post('/api/orgs').set('Authorization', `Bearer ${authToken}`).send({ name: orgName });
+}
+
+export const inviteOrgMemberReq = async(orgId: number, username: String, authToken: String) => {
+  return await request(app).post(`/api/orgs/${orgId}/invite`).set('Authorization', `Bearer ${authToken}`).send({ username });
+}
+
+export const createTestUser = async() => {
+    const creds: TestUserCredentials = buildUser();
+    let signupRes = await signUpReq(creds.username, creds.password);
+    expect(signupRes.status).toBe(200);
+    const authToken = signupRes.body.authToken;
+    const userId = signupRes.body.userId;
+    const testUser: AuthenticatedTestUser = {...creds, authToken, userId };
+
+    return testUser;
 }
