@@ -2,7 +2,8 @@ import {
   createOrgReq,
   createTestUser,
   inviteOrgMemberReq,
-  cleanUpDB
+  cleanUpDB,
+  orgDetailsReq
 } from '../helpers/utils';
 
 import { isOwner } from '../../src/services/orgService';
@@ -176,6 +177,62 @@ describe('Org: Invite User', () => {
 
     expect(inviteRes.status).toBe(404);
     expect(inviteRes.body).toMatchObject({
+      error: expect.any(String)
+    });
+  });
+});
+
+describe('Org: View Org Details', () => {
+  beforeEach(async () => {
+    await cleanUpDB();
+  });
+
+
+  it('should allow owner and member to view org details', async () => {
+    const owner = await createTestUser();
+    const member = await createTestUser();
+
+    const orgRes = await createOrgReq(owner.authToken, 'Test Org');
+    const orgId = orgRes.body.id;
+
+    await inviteOrgMemberReq(orgId, member.username, owner.authToken);
+
+    const expectedBody = {
+      id: orgId,
+      name: 'Test Org',
+      members: expect.arrayContaining([
+        expect.objectContaining({
+          username: owner.username,
+          role: 'owner'
+        }),
+        expect.objectContaining({
+          username: member.username,
+          role: 'member'
+        })
+      ])
+    };
+
+    const resOwner = await orgDetailsReq(orgId, owner.authToken);
+    const resMember = await orgDetailsReq(orgId, member.authToken);
+
+    expect(resOwner.status).toBe(200);
+    expect(resOwner.body).toMatchObject(expectedBody);
+
+    expect(resMember.status).toBe(200);
+    expect(resMember.body).toMatchObject(expectedBody);
+});
+
+  it('should return 403 if member/owner views org they are not a member of', async () => {
+    const owner = await createTestUser();
+    const nonMember = await createTestUser();
+
+    const orgRes = await createOrgReq(owner.authToken, 'Test Org');
+    const orgId = orgRes.body.id;
+
+    const res = await orgDetailsReq(orgId, nonMember.authToken);
+
+    expect(res.status).toBe(403);
+    expect(res.body).toMatchObject({
       error: expect.any(String)
     });
   });
