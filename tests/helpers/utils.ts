@@ -3,6 +3,7 @@ import app from '../../src/app';
 import { pool } from '../../src/db';
 import { User } from '../../src/types/auth';
 import { AuthenticatedTestUser, TestUserCredentials } from './types';
+import { createOrg } from '../../src/services/orgService';
 
 export const cleanUpDB = async () => {
     await pool.query('TRUNCATE org_members, orgs, users RESTART IDENTITY CASCADE');
@@ -72,3 +73,22 @@ export const removeOrgMemberReq = async(orgId: number, username: String, authTok
 export const userDetailsReq = async(userId: number, authToken: String) => {
   return await request(app).get(`/api/users/${userId}`).set('Authorization', `Bearer ${authToken}`);
 }
+
+export const createOrgWithMembers = async ({
+  orgName = 'Test Org',
+  memberCount = 0
+} = {}) => {
+  const owner = await createTestUser();
+
+  const orgRes = await createOrgReq(owner.authToken, orgName);
+  const orgId = orgRes.body.id;
+
+  let members = [];
+  for (let i = 0; i < memberCount; i++) {
+    let member = await createTestUser();
+    members.push(member);
+    await inviteOrgMemberReq(orgId, member.username, owner.authToken);
+  }
+
+  return { orgId, owner, members }
+};
