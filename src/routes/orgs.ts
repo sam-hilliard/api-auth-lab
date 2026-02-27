@@ -32,7 +32,6 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
 // get org
 router.get('/:orgId', requireOrg, requireMember, async (req: AuthRequest, res) => {
   const orgId = Number(req.params.orgId);
-  const userId = Number(req.user?.userId);
 
   const org = await getOrg(orgId);
   const members = await getMembers(orgId);

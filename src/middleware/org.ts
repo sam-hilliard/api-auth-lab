@@ -37,7 +37,7 @@ export async function requireMember(
   const orgId = Number(req.params.orgId);
 
   if (!(await isMemberExists(orgId, userId))) {
-    return res.status(403).json({ message: 'Forbidden' });
+    return res.status(403).json({ error: 'Forbidden' });
   }
 
   next();
