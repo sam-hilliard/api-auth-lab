@@ -68,3 +68,7 @@ export const orgDetailsReq = async(orgId: number, authToken: String) => {
 export const removeOrgMemberReq = async(orgId: number, username: String, authToken: String) => {
   return await request(app).delete(`/api/orgs/${orgId}/${username}`).set('Authorization', `Bearer ${authToken}`);
 }
+
+export const userDetailsReq = async(userId: number, authToken: String) => {
+  return await request(app).get(`/api/users/${userId}`).set('Authorization', `Bearer ${authToken}`);
+}
