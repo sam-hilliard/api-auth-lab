@@ -73,6 +73,10 @@ export async function requireTargetMember(
     return res.status(404).json({ error: `${targetUsername} is not in org` });
   }
 
+  if (await isOwner(orgId, targetUserId)) {
+    return res.status(403).json({ error: 'Cannot remove owner' });
+  }
+
   (req as any).targetUser = findUser?.username;
 
   next();

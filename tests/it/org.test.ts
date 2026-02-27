@@ -3,7 +3,8 @@ import {
   createTestUser,
   inviteOrgMemberReq,
   cleanUpDB,
-  orgDetailsReq
+  orgDetailsReq,
+  removeOrgMemberReq
 } from '../helpers/utils';
 
 import { isOwner } from '../../src/services/orgService';
@@ -237,3 +238,55 @@ describe('Org: View Org Details', () => {
     });
   });
 });
+
+describe('Org: Remove Member', () => {
+  it('should allow org owner to remove a member', async () => {
+    const owner = await createTestUser();
+    const member = await createTestUser();
+
+    const orgRes = await createOrgReq(owner.authToken, 'Test Org');
+    const orgId = orgRes.body.id;
+
+    await inviteOrgMemberReq(orgId, member.username, owner.authToken);
+
+    const res = await removeOrgMemberReq(orgId, member.username, owner.authToken);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      message: expect.any(String)
+    });
+  });
+
+  it('should not allow a member to remove another member', async () => {
+    const owner = await createTestUser();
+    const member1 = await createTestUser();
+    const member2 = await createTestUser();
+
+    const orgRes = await createOrgReq(owner.authToken, 'Test Org');
+    const orgId = orgRes.body.id;
+
+    await inviteOrgMemberReq(orgId, member1.username, owner.authToken);
+    await inviteOrgMemberReq(orgId, member2.username, owner.authToken);
+
+    const res = await removeOrgMemberReq(orgId, member2.username, member1.authToken);
+
+    expect(res.status).toBe(403);
+    expect(res.body).toMatchObject({
+      error: expect.any(String)
+    });
+  });
+
+  it('should not allow an org owner to remove themselves', async () => {
+    const owner = await createTestUser();
+
+    const orgRes = await createOrgReq(owner.authToken, 'Test Org');
+    const orgId = orgRes.body.id;
+
+    const res = await removeOrgMemberReq(orgId, owner.username, owner.authToken);
+
+    expect(res.status).toBe(403);
+    expect(res.body).toMatchObject({
+      error: expect.any(String)
+    });
+  });
+})

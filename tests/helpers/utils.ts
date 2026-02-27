@@ -64,3 +64,7 @@ export const createTestUser = async() => {
 export const orgDetailsReq = async(orgId: number, authToken: String) => {
   return await request(app).get(`/api/orgs/${orgId}`).set('Authorization', `Bearer ${authToken}`);
 }
+
+export const removeOrgMemberReq = async(orgId: number, username: String, authToken: String) => {
+  return await request(app).delete(`/api/orgs/${orgId}/${username}`).set('Authorization', `Bearer ${authToken}`);
+}
