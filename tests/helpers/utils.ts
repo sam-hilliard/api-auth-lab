@@ -3,10 +3,9 @@ import app from '../../src/app';
 import { pool } from '../../src/db';
 import { User } from '../../src/types/auth';
 import { AuthenticatedTestUser, TestUserCredentials } from './types';
-import { createOrg } from '../../src/services/orgService';
 
 export const cleanUpDB = async () => {
-    await pool.query('TRUNCATE org_members, orgs, users RESTART IDENTITY CASCADE');
+    await pool.query('TRUNCATE org_members, documents, orgs, users RESTART IDENTITY CASCADE');
 };
 
 export const buildUser = () => ({
@@ -91,4 +90,24 @@ export const createOrgWithMembers = async ({
   }
 
   return { orgId, owner, members }
+};
+
+export const createDocumentReq = async(orgId: number, title: String, content: String, authToken: String) => {
+  return await request(app).post(`/api/orgs/${orgId}/documents`).set('Authorization', `Bearer ${authToken}`).send({ title, content });
+};
+
+export const getDocumentsReq = async(orgId: number, authToken: String) => {
+  return await request(app).get(`/api/orgs/${orgId}/documents`).set('Authorization', `Bearer ${authToken}`);
+};
+
+export const getDocumentReq = async(orgId: number, docId: number, authToken: String) => {
+  return await request(app).get(`/api/orgs/${orgId}/documents/${docId}`).set('Authorization', `Bearer ${authToken}`);
+};
+
+export const editDocumentReq = async(orgId: number, docId: number, title: String, content: String, authToken: String) => {
+  return await request(app).patch(`/api/orgs/${orgId}/documents/${docId}`).set('Authorization', `Bearer ${authToken}`).send({ title, content });
+};
+
+export const deleteDocumentReq = async(orgId: number, docId: number, authToken: String) => {
+  return await request(app).delete(`/api/orgs/${orgId}/documents/${docId}`).set('Authorization', `Bearer ${authToken}`);
 };

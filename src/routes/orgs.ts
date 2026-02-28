@@ -11,6 +11,7 @@ import {
 import { AuthRequest } from '../types/auth';
 import { findUserByUsername } from '../services/userService';
 import { requireOrg,requireMember, requireOwner, requireTargetMember } from '../middleware/org';
+import  documentRoutes from './documents';
 
 const router = Router();
 
@@ -91,5 +92,7 @@ async (req: AuthRequest, res) => {
   return res.status(200).json({ message: 'Successfully removed user from org.'});
 
 });
+
+router.use('/:orgId/documents', documentRoutes);
 
 export default router;
