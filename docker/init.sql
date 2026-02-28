@@ -23,3 +23,14 @@ CREATE TABLE org_members (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     PRIMARY KEY (org_id, user_id)
 );
+
+/* Documents Table */
+CREATE TABLE documents (
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    org_id INTEGER NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_by INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);

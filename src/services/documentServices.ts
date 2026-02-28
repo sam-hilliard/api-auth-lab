@@ -2,14 +2,47 @@ import { pool } from '../db';
 import { Document } from '../types/document';
 
 export const getDocumentsByOrg = async (orgId: number) => {
-    const result = await pool.query<Document>('SELECT * FROM documents WHERE org_id = $1', [orgId]);
-    return result.rows[0];
-}
+  const result = await pool.query(
+    `
+    SELECT 
+      d.id,
+      d.org_id,
+      d.title,
+      d.content,
+      d.created_at,
+      d.updated_at,
+      u.username AS created_by_username
+    FROM documents d
+    JOIN users u ON d.created_by = u.id
+    WHERE d.org_id = $1
+    ORDER BY d.created_at DESC
+    `,
+    [orgId]
+  );
 
-export const getDocument = async (orgId: number, docId: number) => {   
-    const result = await pool.query<Document>('SELECT * FROM documents WHERE org_id = $1 AND id = $2', [orgId, docId]);
-    return result.rows[0];
-}
+  return result.rows;
+};
+
+export const getDocument = async (orgId: number, docId: number) => {
+  const result = await pool.query<Document>(
+    `
+    SELECT 
+      d.id,
+      d.org_id,
+      d.title,
+      d.content,
+      d.created_at,
+      d.updated_at,
+      u.username AS created_by_username
+    FROM documents d
+    JOIN users u ON d.created_by = u.id
+    WHERE d.org_id = $1 AND d.id = $2
+    `,
+    [orgId, docId]
+  );
+
+  return result.rows[0];
+};
 
 export const createDocument = async (orgId: number, title: string, content: string, creatorId: number) => {
     const result = await pool.query<Document>(

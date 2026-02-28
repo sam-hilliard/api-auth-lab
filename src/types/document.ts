@@ -3,7 +3,7 @@ export interface Document {
     org_id: number;
     filename: string;
     content: string;
-    created_by: number;
+    created_by: string;
     created_at: Date;
     updated_at: Date;
 }
