@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { getOrg, isMemberExists, isOwner } from '../services/orgService';
 import { findUserByUsername } from '../services/userService';
 import { OrgRequest } from '../types/org';
@@ -42,12 +42,17 @@ export async function requireOwner(req: OrgRequest, res: Response, next: NextFun
   next();
 }
 
-export async function requireTargetMember(req: Request, res: Response, next: NextFunction) {
+export async function requireTargetMember(req: OrgRequest, res: Response, next: NextFunction) {
   const orgId = Number(req.params.orgId);
   const targetUsername = String(req.params.username);
 
   const findUser = await findUserByUsername(targetUsername);
-  const targetUserId = Number(findUser?.id);
+
+  if (!findUser) {
+    return res.status(404).json({ error: `${targetUsername} not found` });
+  }
+
+  const targetUserId = Number(findUser.id);
 
   if (!(await isMemberExists(orgId, targetUserId))) {
     return res.status(404).json({ error: `${targetUsername} is not in org` });
@@ -57,7 +62,7 @@ export async function requireTargetMember(req: Request, res: Response, next: Nex
     return res.status(403).json({ error: 'Cannot remove owner' });
   }
 
-  (req as any).targetUser = findUser?.username;
+  req.targetUser = findUser.username;
 
   next();
 }

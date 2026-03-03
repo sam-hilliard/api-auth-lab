@@ -10,4 +10,5 @@ export interface Org {
 
 export interface OrgRequest extends AuthRequest {
   org?: Org;
+  targetUser: string;
 }

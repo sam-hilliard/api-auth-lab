@@ -1,3 +1,4 @@
+import { Response } from 'supertest';
 import { AuthenticatedTestUser } from '../helpers/types';
 import {
   cleanUpDB,
@@ -153,7 +154,7 @@ describe('Documents: View Documents in org', () => {
       },
     ];
 
-    const assertDocumentsResponse = (res: any) => {
+    const assertDocumentsResponse = (res: Response) => {
       expect(res.status).toBe(200);
       expect(res.body).toHaveLength(2);
 
@@ -235,7 +236,7 @@ describe('Documents: Get Specific Document By Id', () => {
       member.authToken,
     );
 
-    const assertSingleDocument = (res: any, expectedId: number, expectedUsername: string) => {
+    const assertSingleDocument = (res: Response, expectedId: number, expectedUsername: string) => {
       expect(res.status).toBe(200);
       expect(res.body).toEqual(
         expect.objectContaining({
@@ -296,7 +297,7 @@ describe('Documents: Update Document', () => {
     );
 
     const assertUpdatedDocument = (
-      res: any,
+      res: Response,
       expectedId: number,
       expectedTitle: string,
       expectedContent: string,
