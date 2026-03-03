@@ -344,4 +344,72 @@ describe('Documents: Update Document', () => {
             error: expect.any(String)
         });
     });
+
+});
+
+describe('Documents: Delete Document', () => {
+
+    let orgId: number;
+    let owner: AuthenticatedTestUser;
+    let member: AuthenticatedTestUser;
+    beforeEach(async () => {
+        await cleanUpDB();
+
+        const result = await createOrgWithMembers({ memberCount: 1 });
+
+        orgId = result.orgId;
+        owner = result.owner;
+        const members = result.members;
+
+        member = members[0];
+    });
+
+    afterEach(async () => {
+        await cleanUpDB();
+    });
+
+    it('should allow owner and member to delete documents they own', async () => {
+        const memberDocRes = await createDocumentReq(
+            orgId,
+            'Test Document',
+            'Test Content',
+            member.authToken
+        );
+
+        const resMember = await deleteDocumentReq(orgId, memberDocRes.body.id, member.authToken);
+        expect(resMember.status).toBe(200);
+    });
+
+    it('should return 403 if non-creator deletes document', async () => {
+        const memberDocRes = await createDocumentReq(
+            orgId,
+            'Test Document',
+            'Test Content',
+            member.authToken
+        );
+
+        const res = await deleteDocumentReq(orgId, memberDocRes.body.id, owner.authToken);
+
+        expect(res.status).toBe(403);
+        expect(res.body).toMatchObject({
+            error: expect.any(String)
+        });
+    });
+
+    it('should return 403 if non-member deletes document', async () => {
+        const memberDocRes = await createDocumentReq(
+            orgId,
+            'Test Document',
+            'Test Content',
+            member.authToken
+        );
+
+        const nonMember = await createTestUser();
+        const res = await deleteDocumentReq(orgId, memberDocRes.body.id, nonMember.authToken);
+
+        expect(res.status).toBe(403);
+        expect(res.body).toMatchObject({
+            error: expect.any(String)
+        });
+    });
 });
