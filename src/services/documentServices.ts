@@ -17,7 +17,7 @@ export const getDocumentsByOrg = async (orgId: number) => {
     WHERE d.org_id = $1
     ORDER BY d.created_at DESC
     `,
-    [orgId]
+    [orgId],
   );
 
   return result.rows;
@@ -38,7 +38,7 @@ export const getDocument = async (orgId: number, docId: number) => {
     JOIN users u ON d.created_by = u.id
     WHERE d.org_id = $1 AND d.id = $2
     `,
-    [orgId, docId]
+    [orgId, docId],
   );
 
   return result.rows[0];
@@ -48,7 +48,7 @@ export const createDocument = async (
   orgId: number,
   title: string,
   content: string,
-  creatorId: number
+  creatorId: number,
 ) => {
   const result = await pool.query(
     `
@@ -68,27 +68,38 @@ export const createDocument = async (
     FROM inserted
     JOIN users ON users.id = inserted.created_by
     `,
-    [orgId, title, content, creatorId]
+    [orgId, title, content, creatorId],
   );
 
   return result.rows[0];
 };
 
-export const updateDocument = async (orgId: number, docId: number, title: string, content: string) => {
-    const result = await pool.query<Document>(
-        'UPDATE documents SET title = $1, content = $2 WHERE org_id = $3 AND id = $4 RETURNING *',
-        [title, content, orgId, docId]
-    );
+export const updateDocument = async (
+  orgId: number,
+  docId: number,
+  title: string,
+  content: string,
+) => {
+  const result = await pool.query<Document>(
+    'UPDATE documents SET title = $1, content = $2 WHERE org_id = $3 AND id = $4 RETURNING *',
+    [title, content, orgId, docId],
+  );
 
-    return result.rows[0];
-}
+  return result.rows[0];
+};
 
 export const deleteDocument = async (orgId: number, docId: number) => {
-    const result = await pool.query('DELETE FROM documents WHERE org_id = $1 AND id = $2', [orgId, docId]);
-    return result.rowCount === 0;
-}
+  const result = await pool.query('DELETE FROM documents WHERE org_id = $1 AND id = $2', [
+    orgId,
+    docId,
+  ]);
+  return result.rowCount === 0;
+};
 
 export const isDocumentCreator = async (orgId: number, docId: number, userId: number) => {
-    const result = await pool.query('SELECT created_by FROM documents WHERE org_id = $1 AND id = $2 AND created_by = $3', [orgId, docId, userId]);
-    return result.rowCount === 1;
-}
+  const result = await pool.query(
+    'SELECT created_by FROM documents WHERE org_id = $1 AND id = $2 AND created_by = $3',
+    [orgId, docId, userId],
+  );
+  return result.rowCount === 1;
+};

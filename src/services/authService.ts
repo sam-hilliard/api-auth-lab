@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { findUserByUsername, createUser } from './userService';
 import { User } from '../types/auth';
+import { findUserByUsername, createUser } from './userService';
 
 export async function login(username: string, password: string): Promise<User | null> {
   const user = await findUserByUsername(username);

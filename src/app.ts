@@ -1,8 +1,8 @@
-import express, { Request, Response, NextFunction } from 'express';
-import authRoutes from './routes/auth';
-import userRoutes from './routes/users';
-import orgRoutes from './routes/orgs';
+import express, { Request, Response } from 'express';
 import { authenticateToken } from './middleware/auth';
+import authRoutes from './routes/auth';
+import orgRoutes from './routes/orgs';
+import userRoutes from './routes/users';
 
 const app = express();
 
@@ -17,12 +17,10 @@ app.get('/api/health', (_req, res) => {
 });
 
 // generic error handler
-app.use(
-  (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-    console.error(err);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-);
+app.use((err: unknown, _req: Request, res: Response) => {
+  console.error(err);
+  res.status(500).json({ message: 'Internal Server Error' });
+});
 
 // 404 handler
 app.use((_req, res) => {

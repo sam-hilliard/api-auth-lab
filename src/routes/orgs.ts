@@ -1,17 +1,17 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth';
+import { requireOrg, requireMember, requireOwner, requireTargetMember } from '../middleware/org';
 import {
   addMember,
   createOrg,
   getMembers,
   isMemberExists,
   getOrg,
-  removeMember
+  removeMember,
 } from '../services/orgService';
-import { AuthRequest } from '../types/auth';
 import { findUserByUsername } from '../services/userService';
-import { requireOrg,requireMember, requireOwner, requireTargetMember } from '../middleware/org';
-import  documentRoutes from './documents';
+import { AuthRequest } from '../types/auth';
+import documentRoutes from './documents';
 
 const router = Router();
 
@@ -21,7 +21,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
   const userId = Number(req.user?.userId);
 
   if (!name) {
-      return res.status(400).json({ error: 'Name is required' });
+    return res.status(400).json({ error: 'Name is required' });
   }
 
   const org = await createOrg(name);
@@ -37,8 +37,8 @@ router.get('/:orgId', requireOrg, requireMember, async (req: AuthRequest, res) =
   const org = await getOrg(orgId);
   const members = await getMembers(orgId);
   return res.status(200).json({
-      ...org,
-      members
+    ...org,
+    members,
   });
 });
 
@@ -47,7 +47,7 @@ router.post('/:orgId/invite', requireOrg, requireOwner, async (req: AuthRequest,
   const username = req.body.username;
 
   if (!username) {
-      return res.status(400).json({ error: 'Username is required' });
+    return res.status(400).json({ error: 'Username is required' });
   }
 
   const orgId = Number(req.params.orgId);
@@ -56,42 +56,41 @@ router.post('/:orgId/invite', requireOrg, requireOwner, async (req: AuthRequest,
   const findUser = await findUserByUsername(username);
   const userId = findUser?.id;
   if (!userId) {
-      return res.status(404).json({ error: `User does not exist with the username: ${username}` }); 
+    return res.status(404).json({ error: `User does not exist with the username: ${username}` });
   }
 
   // check that member does not already exist
   const memberExists = await isMemberExists(orgId, userId);
   if (memberExists) {
-      return res.status(400).json({ error: 'User is already a member of the org' });
+    return res.status(400).json({ error: 'User is already a member of the org' });
   }
 
   const responseData = await addMember(orgId, userId, 'member');
   return res.status(201).json(responseData);
-
 });
 
 // remove member
-router.delete('/:orgId/:username',
+router.delete(
+  '/:orgId/:username',
   authenticateToken,
   requireOrg,
   requireOwner,
-  requireTargetMember, 
-async (req: AuthRequest, res) => {
+  requireTargetMember,
+  async (req: AuthRequest, res) => {
+    const orgId = Number(req.params.orgId);
+    const username = String(req.params.username);
 
-  const orgId = Number(req.params.orgId);
-  const username = String(req.params.username);
+    const findUser = await findUserByUsername(username);
+    const userId = Number(findUser?.id);
 
-  const findUser = await findUserByUsername(username);
-  const userId = Number(findUser?.id);
+    const removed = await removeMember(orgId, userId);
+    if (!removed) {
+      return res.status(400).json({ error: 'Unable to remove member.' });
+    }
 
-  const removed = await removeMember(orgId, userId);
-  if (!removed) {
-    return res.status(400).json({ error: 'Unable to remove member.' })
-  }
-
-  return res.status(200).json({ message: 'Successfully removed user from org.'});
-
-});
+    return res.status(200).json({ message: 'Successfully removed user from org.' });
+  },
+);
 
 router.use('/:orgId/documents', documentRoutes);
 

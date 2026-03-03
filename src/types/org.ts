@@ -1,4 +1,4 @@
-import { AuthRequest } from './auth'
+import { AuthRequest } from './auth';
 
 export interface Org {
   id: number;
@@ -9,5 +9,5 @@ export interface Org {
 }
 
 export interface OrgRequest extends AuthRequest {
-  org?: Awaited<ReturnType<typeof getOrg>>;
+  org?: Org;
 }

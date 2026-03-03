@@ -5,11 +5,10 @@ import {
   queryUsersByName,
   cleanUpDB,
   reqUserById,
-  createTestUser
+  createTestUser,
 } from '../helpers/utils';
 
 describe('Authentication: Signup', () => {
-
   beforeEach(async () => {
     await cleanUpDB();
   });
@@ -23,7 +22,7 @@ describe('Authentication: Signup', () => {
     expect(res.body).toMatchObject({
       userId: expect.any(Number),
       userName: creds.username,
-      authToken: expect.any(String)
+      authToken: expect.any(String),
     });
 
     const users = await queryUsersByName(creds.username);
@@ -37,7 +36,7 @@ describe('Authentication: Signup', () => {
 
     expect(res.status).toBe(400);
     expect(res.body).toMatchObject({
-      error: expect.any(String)
+      error: expect.any(String),
     });
 
     const users = await queryUsersByName(user.username);
@@ -49,7 +48,7 @@ describe('Authentication: Signup', () => {
 
     expect(res.status).toBe(400);
     expect(res.body).toMatchObject({
-      error: expect.any(String)
+      error: expect.any(String),
     });
 
     const users = await queryUsersByName('');
@@ -58,7 +57,6 @@ describe('Authentication: Signup', () => {
 });
 
 describe('Authentication: Login', () => {
-
   beforeEach(async () => {
     await cleanUpDB();
   });
@@ -96,7 +94,6 @@ describe('Authentication: Login', () => {
 });
 
 describe('Authentication: JWT', () => {
-
   beforeEach(async () => {
     await cleanUpDB();
   });
@@ -108,7 +105,7 @@ describe('Authentication: JWT', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).not.toMatchObject({
-      error: expect.any(String)
+      error: expect.any(String),
     });
   });
 
@@ -121,7 +118,7 @@ describe('Authentication: JWT', () => {
 
     expect(res.status).toBe(403);
     expect(res.body).toMatchObject({
-      error: expect.any(String)
+      error: expect.any(String),
     });
   });
 
@@ -134,7 +131,7 @@ describe('Authentication: JWT', () => {
 
     expect(res.status).toBe(403);
     expect(res.body).toMatchObject({
-      error: expect.any(String)
+      error: expect.any(String),
     });
   });
 
@@ -145,7 +142,7 @@ describe('Authentication: JWT', () => {
 
     expect(res.status).toBe(403);
     expect(res.body).toMatchObject({
-      error: expect.any(String)
+      error: expect.any(String),
     });
   });
 });

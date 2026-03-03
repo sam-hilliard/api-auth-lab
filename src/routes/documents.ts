@@ -1,15 +1,15 @@
 // routes/documents.ts
 import { Router } from 'express';
-import { AuthRequest } from '../types/auth';
-import { requireOrg, requireMember } from '../middleware/org';
 import { requireCreator } from '../middleware/documents';
+import { requireOrg, requireMember } from '../middleware/org';
 import {
-    getDocumentsByOrg,
-    getDocument,
-    createDocument,
-    updateDocument,
-    deleteDocument
+  getDocumentsByOrg,
+  getDocument,
+  createDocument,
+  updateDocument,
+  deleteDocument,
 } from '../services/documentServices';
+import { AuthRequest } from '../types/auth';
 
 const router = Router({ mergeParams: true });
 router.use(requireOrg, requireMember);
@@ -38,7 +38,7 @@ router.post('/', requireOrg, requireMember, async (req: AuthRequest, res) => {
   const { title, content } = req.body;
 
   if (!content || !title) {
-      return res.status(400).json({ error: 'Title and content are required' });
+    return res.status(400).json({ error: 'Title and content are required' });
   }
 
   const document = await createDocument(orgId, title, content, userId);
@@ -51,7 +51,7 @@ router.patch('/:id', requireOrg, requireMember, requireCreator, async (req: Auth
   const { title, content } = req.body;
 
   if (!content || !title) {
-      return res.status(400).json({ error: 'Title and content are required' });
+    return res.status(400).json({ error: 'Title and content are required' });
   }
 
   const updated = await updateDocument(orgId, docId, title, content);

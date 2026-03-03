@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Response } from 'express';
-import { AuthRequest } from '../types/auth';
 import { findUserById } from '../services/userService';
+import { AuthRequest } from '../types/auth';
 
 const router = Router();
 

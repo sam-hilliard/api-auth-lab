@@ -5,78 +5,83 @@ import { User } from '../../src/types/auth';
 import { AuthenticatedTestUser, TestUserCredentials } from './types';
 
 export const cleanUpDB = async () => {
-    await pool.query('TRUNCATE org_members, documents, orgs, users RESTART IDENTITY CASCADE');
+  await pool.query('TRUNCATE org_members, documents, orgs, users RESTART IDENTITY CASCADE');
 };
 
 export const buildUser = () => ({
   username: `user_${Date.now()}`,
-  password: 'password123'
+  password: 'password123',
 });
 
-export const signUpReq = async(username: String, password: String) => {
+export const signUpReq = async (username: string, password: string) => {
   return await request(app).post('/api/auth/signup').send({ username, password });
-}
+};
 
-export const loginReq = async(username: String, password: String) => {
+export const loginReq = async (username: string, password: string) => {
   return await request(app).post('/api/auth/login').send({ username, password });
-}
+};
 
-export const queryUsersByName = async(username: String) => {
+export const queryUsersByName = async (username: string) => {
   const result = await pool.query<User>(
     'SELECT id, username, password FROM users WHERE username = $1',
-    [username]
+    [username],
   );
 
   return result.rows;
-}
+};
 
-export const reqUserById = async(authToken: String, userId: number) => {
-  return await request(app).get(`/api/users/${userId}`).set('Authorization', `Bearer ${authToken}`);;
-}
-
-export const parseJwt = (token: String) => {
-    return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-}
-
-export const getUserIdFromToken = (token: String) => {
-    return parseJwt(token).userId;
-}
-
-export const createOrgReq = async( authToken: String, orgName: String) => {
-  return await request(app).post('/api/orgs').set('Authorization', `Bearer ${authToken}`).send({ name: orgName });
-}
-
-export const inviteOrgMemberReq = async(orgId: number, username: String, authToken: String) => {
-  return await request(app).post(`/api/orgs/${orgId}/invite`).set('Authorization', `Bearer ${authToken}`).send({ username });
-}
-
-export const createTestUser = async() => {
-    const creds: TestUserCredentials = buildUser();
-    let signupRes = await signUpReq(creds.username, creds.password);
-    expect(signupRes.status).toBe(200);
-    const authToken = signupRes.body.authToken;
-    const userId = signupRes.body.userId;
-    const testUser: AuthenticatedTestUser = {...creds, authToken, userId };
-
-    return testUser;
-}
-
-export const orgDetailsReq = async(orgId: number, authToken: String) => {
-  return await request(app).get(`/api/orgs/${orgId}`).set('Authorization', `Bearer ${authToken}`);
-}
-
-export const removeOrgMemberReq = async(orgId: number, username: String, authToken: String) => {
-  return await request(app).delete(`/api/orgs/${orgId}/${username}`).set('Authorization', `Bearer ${authToken}`);
-}
-
-export const userDetailsReq = async(userId: number, authToken: String) => {
+export const reqUserById = async (authToken: string, userId: number) => {
   return await request(app).get(`/api/users/${userId}`).set('Authorization', `Bearer ${authToken}`);
-}
+};
 
-export const createOrgWithMembers = async ({
-  orgName = 'Test Org',
-  memberCount = 0
-} = {}) => {
+export const parseJwt = (token: string) => {
+  return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+};
+
+export const getUserIdFromToken = (token: string) => {
+  return parseJwt(token).userId;
+};
+
+export const createOrgReq = async (authToken: string, orgName: string) => {
+  return await request(app)
+    .post('/api/orgs')
+    .set('Authorization', `Bearer ${authToken}`)
+    .send({ name: orgName });
+};
+
+export const inviteOrgMemberReq = async (orgId: number, username: string, authToken: string) => {
+  return await request(app)
+    .post(`/api/orgs/${orgId}/invite`)
+    .set('Authorization', `Bearer ${authToken}`)
+    .send({ username });
+};
+
+export const createTestUser = async () => {
+  const creds: TestUserCredentials = buildUser();
+  let signupRes = await signUpReq(creds.username, creds.password);
+  expect(signupRes.status).toBe(200);
+  const authToken = signupRes.body.authToken;
+  const userId = signupRes.body.userId;
+  const testUser: AuthenticatedTestUser = { ...creds, authToken, userId };
+
+  return testUser;
+};
+
+export const orgDetailsReq = async (orgId: number, authToken: string) => {
+  return await request(app).get(`/api/orgs/${orgId}`).set('Authorization', `Bearer ${authToken}`);
+};
+
+export const removeOrgMemberReq = async (orgId: number, username: string, authToken: string) => {
+  return await request(app)
+    .delete(`/api/orgs/${orgId}/${username}`)
+    .set('Authorization', `Bearer ${authToken}`);
+};
+
+export const userDetailsReq = async (userId: number, authToken: string) => {
+  return await request(app).get(`/api/users/${userId}`).set('Authorization', `Bearer ${authToken}`);
+};
+
+export const createOrgWithMembers = async ({ orgName = 'Test Org', memberCount = 0 } = {}) => {
   const owner = await createTestUser();
 
   const orgRes = await createOrgReq(owner.authToken, orgName);
@@ -89,25 +94,48 @@ export const createOrgWithMembers = async ({
     await inviteOrgMemberReq(orgId, member.username, owner.authToken);
   }
 
-  return { orgId, owner, members }
+  return { orgId, owner, members };
 };
 
-export const createDocumentReq = async(orgId: number, title: String, content: String, authToken: String) => {
-  return await request(app).post(`/api/orgs/${orgId}/documents`).set('Authorization', `Bearer ${authToken}`).send({ title, content });
+export const createDocumentReq = async (
+  orgId: number,
+  title: string,
+  content: string,
+  authToken: string,
+) => {
+  return await request(app)
+    .post(`/api/orgs/${orgId}/documents`)
+    .set('Authorization', `Bearer ${authToken}`)
+    .send({ title, content });
 };
 
-export const getDocumentsReq = async(orgId: number, authToken: String) => {
-  return await request(app).get(`/api/orgs/${orgId}/documents`).set('Authorization', `Bearer ${authToken}`);
+export const getDocumentsReq = async (orgId: number, authToken: string) => {
+  return await request(app)
+    .get(`/api/orgs/${orgId}/documents`)
+    .set('Authorization', `Bearer ${authToken}`);
 };
 
-export const getDocumentReq = async(orgId: number, docId: number, authToken: String) => {
-  return await request(app).get(`/api/orgs/${orgId}/documents/${docId}`).set('Authorization', `Bearer ${authToken}`);
+export const getDocumentReq = async (orgId: number, docId: number, authToken: string) => {
+  return await request(app)
+    .get(`/api/orgs/${orgId}/documents/${docId}`)
+    .set('Authorization', `Bearer ${authToken}`);
 };
 
-export const editDocumentReq = async(orgId: number, docId: number, title: String, content: String, authToken: String) => {
-  return await request(app).patch(`/api/orgs/${orgId}/documents/${docId}`).set('Authorization', `Bearer ${authToken}`).send({ title, content });
+export const editDocumentReq = async (
+  orgId: number,
+  docId: number,
+  title: string,
+  content: string,
+  authToken: string,
+) => {
+  return await request(app)
+    .patch(`/api/orgs/${orgId}/documents/${docId}`)
+    .set('Authorization', `Bearer ${authToken}`)
+    .send({ title, content });
 };
 
-export const deleteDocumentReq = async(orgId: number, docId: number, authToken: String) => {
-  return await request(app).delete(`/api/orgs/${orgId}/documents/${docId}`).set('Authorization', `Bearer ${authToken}`);
+export const deleteDocumentReq = async (orgId: number, docId: number, authToken: string) => {
+  return await request(app)
+    .delete(`/api/orgs/${orgId}/documents/${docId}`)
+    .set('Authorization', `Bearer ${authToken}`);
 };

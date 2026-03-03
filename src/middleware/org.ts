@@ -1,17 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import {
-  getOrg,
-  isMemberExists,
-  isOwner,
-} from '../services/orgService'
+import { getOrg, isMemberExists, isOwner } from '../services/orgService';
 import { findUserByUsername } from '../services/userService';
 import { OrgRequest } from '../types/org';
 
-export async function requireOrg(
-  req: OrgRequest,
-  res: Response,
-  next: NextFunction
-) {
+export async function requireOrg(req: OrgRequest, res: Response, next: NextFunction) {
   const orgId = Number(req.params.orgId);
 
   if (isNaN(orgId)) {
@@ -28,11 +20,7 @@ export async function requireOrg(
   next();
 }
 
-export async function requireMember(
-  req: OrgRequest,
-  res: Response,
-  next: NextFunction
-) {
+export async function requireMember(req: OrgRequest, res: Response, next: NextFunction) {
   const userId = Number(req.user?.userId);
   const orgId = Number(req.params.orgId);
 
@@ -43,11 +31,7 @@ export async function requireMember(
   next();
 }
 
-export async function requireOwner(
-  req: OrgRequest,
-  res: Response,
-  next: NextFunction
-) {
+export async function requireOwner(req: OrgRequest, res: Response, next: NextFunction) {
   const userId = Number(req.user?.userId);
   const orgId = Number(req.params.orgId);
 
@@ -58,11 +42,7 @@ export async function requireOwner(
   next();
 }
 
-export async function requireTargetMember(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function requireTargetMember(req: Request, res: Response, next: NextFunction) {
   const orgId = Number(req.params.orgId);
   const targetUsername = String(req.params.username);
 

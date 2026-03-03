@@ -1,61 +1,59 @@
 import { Router } from 'express';
-import { signToken } from '../utils/jwt';
 import { login, signup } from '../services/authService';
+import { signToken } from '../utils/jwt';
 const router = Router();
 
-router.post("/login", async (req, res) => {
-    
-    if (!req.body) {
-        return res.status(400).json({ error: 'Request body is required' });
-    }
+router.post('/login', async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json({ error: 'Request body is required' });
+  }
 
-    const { username, password } = req.body; 
+  const { username, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required' });
-    }
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required' });
+  }
 
-    const user = await login(username, password);
+  const user = await login(username, password);
 
-    if (!user) {
-        return res.status(401).json({ error: 'Invalid username or password' });
-    }
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid username or password' });
+  }
 
-    const data = {
-        userId: user.id,
-        userName: user.username
-    }
+  const data = {
+    userId: user.id,
+    userName: user.username,
+  };
 
-    const token = signToken(data);
-    res.status(200).json({authToken: token});
+  const token = signToken(data);
+  res.status(200).json({ authToken: token });
 });
 
-router.post("/signup", async (req, res) => {
+router.post('/signup', async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json({ error: 'Request body is required' });
+  }
 
-    if (!req.body) {
-        return res.status(400).json({ error: 'Request body is required' });
-    }
+  const { username, password } = req.body;
 
-    const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required' });
+  }
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required' });
-    }
+  const user = await signup(username, password);
 
-    const user = await signup(username, password);
+  if (!user) {
+    return res.status(400).json({ error: 'Username already exists' });
+  }
 
-    if (!user) {
-        return res.status(400).json({ error: 'Username already exists' });
-    }
-   
-    let data = {
-        userId: user.id,
-        userName: user.username
-    }
+  let data = {
+    userId: user.id,
+    userName: user.username,
+  };
 
-    const token = signToken(data)
+  const token = signToken(data);
 
-    res.status(200).json({userId: user.id, userName: user.username, authToken: token});
+  res.status(200).json({ userId: user.id, userName: user.username, authToken: token });
 });
 
 export default router;

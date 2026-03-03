@@ -1,7 +1,6 @@
 import { createTestUser, userDetailsReq } from '../helpers/utils';
 
 describe('User: Get User By ID', () => {
-
   it('should allow user to view their own details', async () => {
     const testUser = await createTestUser();
     const res = await userDetailsReq(testUser.userId, testUser.authToken);
@@ -21,8 +20,7 @@ describe('User: Get User By ID', () => {
 
     expect(res.status).toBe(401);
     expect(res.body).toMatchObject({
-      error: expect.any(String)
+      error: expect.any(String),
     });
-
   });
- });
+});
