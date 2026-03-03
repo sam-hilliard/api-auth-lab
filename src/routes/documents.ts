@@ -48,8 +48,13 @@ router.post('/', requireOrg, requireMember, async (req: AuthRequest, res) => {
 router.patch('/:id', requireOrg, requireMember, requireCreator, async (req: AuthRequest, res) => {
   const orgId = Number(req.params.orgId);
   const docId = Number(req.params.id);
+  const { title, content } = req.body;
 
-  const updated = await updateDocument(orgId, docId, req.body.title, req.body.content);
+  if (!content || !title) {
+      return res.status(400).json({ error: 'Title and content are required' });
+  }
+
+  const updated = await updateDocument(orgId, docId, title, content);
   return res.status(200).json(updated);
 });
 

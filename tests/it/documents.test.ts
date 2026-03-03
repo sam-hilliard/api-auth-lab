@@ -2,7 +2,9 @@ import { cleanUpDB,
  createOrgWithMembers, 
  createDocumentReq, 
  getDocumentReq, 
- getDocumentsReq 
+ getDocumentsReq,
+ editDocumentReq,
+ deleteDocumentReq
 } from '../helpers/utils';
 import { AuthenticatedTestUser } from '../helpers/types';
 import { createTestUser } from '../helpers/utils';
@@ -243,6 +245,101 @@ describe('Documents: Get Specific Document By Id', () => {
         const res = await getDocumentReq(orgId, 1, nonMember.authToken);
 
         expect(res.status).toBe(403);
+        expect(res.body).toMatchObject({
+            error: expect.any(String)
+        });
+    });
+});
+
+describe('Documents: Update Document', () => { 
+
+    let orgId: number;
+    let owner: AuthenticatedTestUser;
+    let member: AuthenticatedTestUser;
+    beforeEach(async () => {
+        await cleanUpDB();
+
+        const result = await createOrgWithMembers({ memberCount: 1 });
+
+        orgId = result.orgId;
+        owner = result.owner;
+        const members = result.members;
+
+        member = members[0];
+    });
+
+    afterEach(async () => {
+        await cleanUpDB();
+    });
+
+    it('should allow owner and member to update documents they own', async () => {
+
+        const memberDocRes = await createDocumentReq(
+            orgId,
+            'Test Document',
+            'Test Content',
+            member.authToken
+        );
+
+        const assertUpdatedDocument = (res: any, expectedId: number, expectedTitle: string, expectedContent: string) => {
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual(
+            expect.objectContaining({
+                id: expectedId,
+                title: expectedTitle,
+                content: expectedContent
+            })
+            );
+        };
+
+        const resMember = await editDocumentReq(orgId, memberDocRes.body.id, 'Updated Title', 'Updated Content', member.authToken);
+        assertUpdatedDocument(resMember, memberDocRes.body.id, 'Updated Title', 'Updated Content');
+    });
+
+    it('should return 401 if non-creator updates document', async () => {
+        const memberDocRes = await createDocumentReq(
+            orgId,
+            'Test Document',
+            'Test Content',
+            member.authToken
+        );
+
+        const res = await editDocumentReq(orgId, memberDocRes.body.id, 'Updated Title', 'Updated Content', owner.authToken);
+
+        expect(res.status).toBe(403);
+        expect(res.body).toMatchObject({
+            error: expect.any(String)
+        });
+    });
+
+    it('should return 403 if non-member updates document', async () => {
+        const memberDocRes = await createDocumentReq(
+            orgId,
+            'Test Document',
+            'Test Content',
+            member.authToken
+        );
+
+        const nonMember = await createTestUser();
+        const res = await editDocumentReq(orgId, memberDocRes.body.id, 'Updated Title', 'Updated Content', nonMember.authToken);
+
+        expect(res.status).toBe(403);
+        expect(res.body).toMatchObject({
+            error: expect.any(String)
+        });
+    });
+
+    it('should return error if title or content is missing', async () => {
+        const memberDocRes = await createDocumentReq(
+            orgId,
+            'Test Document',
+            'Test Content',
+            member.authToken
+        );
+
+        const res = await editDocumentReq(orgId, memberDocRes.body.id, '', 'Updated Content', member.authToken);
+
+        expect(res.status).toBe(400);
         expect(res.body).toMatchObject({
             error: expect.any(String)
         });

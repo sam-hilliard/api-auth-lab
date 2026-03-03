@@ -14,7 +14,7 @@ export const requireCreator = async (
 
     const isCreator = await isDocumentCreator(orgId, docId, userId);
     if (!isCreator) {
-        return res.status(401).json({ error: `Unauthorized to access document with ID ${docId}.`});
+        return res.status(403).json({ error: `Unauthorized to access document with ID ${docId}.`});
     }
 
   next();
