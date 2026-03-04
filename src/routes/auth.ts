@@ -1,23 +1,23 @@
 import { Router } from 'express';
 import { login, signup } from '../services/authService';
 import { signToken } from '../utils/jwt';
+import { ClientError } from '../errors/ClientError';
+import { AuthError } from '../errors/AuthError';
 const router = Router();
+import { authSchema } from '../schemas/auth';
 
 router.post('/login', async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ error: 'Request body is required' });
+  const parsed = authSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw new ClientError(parsed.error.message);
   }
 
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' });
-  }
+  const { username, password } = parsed.data;
 
   const user = await login(username, password);
 
   if (!user) {
-    return res.status(401).json({ error: 'Invalid username or password' });
+    throw new AuthError('Invalid username or password');
   }
 
   const data = {
@@ -30,20 +30,18 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ error: 'Request body is required' });
+
+  const parsed = authSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw new ClientError(parsed.error.message);
   }
 
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' });
-  }
+  const { username, password } = parsed.data;
 
   const user = await signup(username, password);
 
   if (!user) {
-    return res.status(400).json({ error: 'Username already exists' });
+    throw new ClientError('Username already exists');
   }
 
   let data = {
