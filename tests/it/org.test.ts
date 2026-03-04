@@ -9,7 +9,6 @@ import {
   createOrgWithMembers,
 } from '../helpers/utils';
 
-
 beforeEach(async () => {
   await cleanUpDB();
 });

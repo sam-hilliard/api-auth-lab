@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
 export interface AuthRequest extends Request {
-  user?: UserPayload;
+  user: UserPayload;
 }
 
 export interface UserPayload {
