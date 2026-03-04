@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { AppError } from './errors/AppError';
 import { authenticateToken } from './middleware/auth';
 import authRoutes from './routes/auth';
 import orgRoutes from './routes/orgs';
@@ -16,15 +17,22 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-// generic error handler
-app.use((err: unknown, _req: Request, res: Response) => {
-  console.error(err);
-  res.status(500).json({ message: 'Internal Server Error' });
-});
-
 // 404 handler
 app.use((_req, res) => {
   res.status(404).json({ message: 'Not found' });
+});
+
+// generic error handler
+app.use((err: unknown, _req: Request, res: Response) => {
+  if (err instanceof AppError) {
+    res.status(err.statusCode).json({
+      error: err.message,
+    });
+  } else {
+    res.status(500).json({
+      error: 'Internal Server Error',
+    });
+  }
 });
 
 export default app;

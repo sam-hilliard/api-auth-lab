@@ -1,5 +1,7 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { AuthError } from '../errors/AuthError';
+import { jwtPayloadSchema } from '../schemas/auth';
 import { AuthRequest, UserPayload } from '../types/auth';
 
 export const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -12,16 +14,28 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(403).json({ error: 'Access token required' });
+    throw new AuthError('Access token required');
   }
 
   const token = authHeader.split(' ')[1];
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+
+    if (typeof decoded === 'string' || !('id' in decoded)) {
+      throw new AuthError('Invalid token payload');
+    }
+
     req.user = decoded as UserPayload;
+
+    const parsed = jwtPayloadSchema.safeParse(decoded);
+
+    if (!parsed.success) {
+      throw new AuthError('Invalid token payload');
+    }
+
     next();
   } catch {
-    return res.status(403).json({ error: 'Invalid or expired token' });
+    throw new AuthError('Invalid or expired token');
   }
 };
