@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/:id', async (req: AuthRequest, res: Response) => {
   const reqId = Number(req.params.id);
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.user.id);
 
   if (!reqId) {
     return res.status(400).json({ error: 'User ID is required' });

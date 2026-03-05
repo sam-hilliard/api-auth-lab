@@ -1,9 +1,9 @@
+import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import { AuthError } from '../errors/AuthError';
 import { jwtPayloadSchema } from '../schemas/auth';
-import { RequestHandler } from 'express';
 
-export const authenticateToken: RequestHandler = (req, res, next) => {
+export const authenticateToken: RequestHandler = (req) => {
   const JWT_SECRET = process.env.JWT_SECRET;
 
   if (!JWT_SECRET) {

@@ -1,20 +1,21 @@
 import { Router } from 'express';
 import { AuthError } from '../errors/AuthError';
 import { ClientError } from '../errors/ClientError';
+import { validateBody } from '../middleware/validateBody';
 import { authSchema } from '../schemas/auth';
 import { login, signup } from '../services/authService';
+import { User } from '../types/auth';
 import { signToken } from '../utils/jwt';
 const router = Router();
 
-const buildAuthResponse = (user: { id: string; username: string }) => {
+const buildAuthResponse = (user: User) => {
   const payload = {
     userId: user.id,
     userName: user.username,
   };
 
   return {
-    userId: user.id,
-    userName: user.username,
+    ...user,
     authToken: signToken(payload),
   };
 };

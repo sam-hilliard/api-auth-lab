@@ -10,4 +10,5 @@ export const authSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
-export type AuthInput = z.infer<typeof authSchema>;
+export type JwtPayload = z.infer<typeof jwtPayloadSchema>;
+export type AuthSchema = z.infer<typeof authSchema>;

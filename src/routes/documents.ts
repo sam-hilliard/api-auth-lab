@@ -34,7 +34,7 @@ router.get('/:id', requireOrg, requireMember, async (req: AuthRequest, res) => {
 // Create a document
 router.post('/', requireOrg, requireMember, async (req: AuthRequest, res) => {
   const orgId = Number(req.params.orgId);
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.user.id);
   const { title, content } = req.body;
 
   if (!content || !title) {

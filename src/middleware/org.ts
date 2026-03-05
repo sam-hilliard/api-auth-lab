@@ -1,9 +1,8 @@
-import { Response, NextFunction } from 'express';
+import { RequestHandler } from 'express';
 import { getOrg, isMemberExists, isOwner } from '../services/orgService';
 import { findUserByUsername } from '../services/userService';
-import { OrgRequest } from '../types/org';
 
-export async function requireOrg(req: OrgRequest, res: Response, next: NextFunction) {
+export const requireOrg: RequestHandler = async (req, res, next) => {
   const orgId = Number(req.params.orgId);
 
   if (isNaN(orgId)) {
@@ -20,8 +19,8 @@ export async function requireOrg(req: OrgRequest, res: Response, next: NextFunct
   next();
 }
 
-export async function requireMember(req: OrgRequest, res: Response, next: NextFunction) {
-  const userId = Number(req.user?.userId);
+export const requireMember: RequestHandler = async (req, res, next) => {
+  const userId = Number(req.user.id);
   const orgId = Number(req.params.orgId);
 
   if (!(await isMemberExists(orgId, userId))) {
@@ -31,8 +30,8 @@ export async function requireMember(req: OrgRequest, res: Response, next: NextFu
   next();
 }
 
-export async function requireOwner(req: OrgRequest, res: Response, next: NextFunction) {
-  const userId = Number(req.user?.userId);
+export const requireOwner: RequestHandler = async (req, res, next) => {
+  const userId = Number(req.user.id);
   const orgId = Number(req.params.orgId);
 
   if (!(await isOwner(orgId, userId))) {
@@ -42,7 +41,7 @@ export async function requireOwner(req: OrgRequest, res: Response, next: NextFun
   next();
 }
 
-export async function requireTargetMember(req: OrgRequest, res: Response, next: NextFunction) {
+export const requireTargetMember: RequestHandler = async (req, res, next) => {
   const orgId = Number(req.params.orgId);
   const targetUsername = String(req.params.username);
 
@@ -62,7 +61,7 @@ export async function requireTargetMember(req: OrgRequest, res: Response, next: 
     return res.status(403).json({ error: 'Cannot remove owner' });
   }
 
-  req.targetUser = findUser.username;
+  req.targetUser = findUser;
 
   next();
 }

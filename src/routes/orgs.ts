@@ -16,9 +16,9 @@ import documentRoutes from './documents';
 const router = Router();
 
 // create org
-router.post('/', authenticateToken, async (req: AuthRequest, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   const name = req.body.name;
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.user.id);
 
   if (!name) {
     return res.status(400).json({ error: 'Name is required' });
@@ -31,7 +31,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // get org
-router.get('/:orgId', requireOrg, requireMember, async (req: AuthRequest, res) => {
+router.get('/:orgId', requireOrg, requireMember, async (req, res) => {
   const orgId = Number(req.params.orgId);
 
   const org = await getOrg(orgId);
@@ -43,7 +43,7 @@ router.get('/:orgId', requireOrg, requireMember, async (req: AuthRequest, res) =
 });
 
 // invite user
-router.post('/:orgId/invite', requireOrg, requireOwner, async (req: AuthRequest, res) => {
+router.post('/:orgId/invite', requireOrg, requireOwner, async (req, res) => {
   const username = req.body.username;
 
   if (!username) {
@@ -76,7 +76,7 @@ router.delete(
   requireOrg,
   requireOwner,
   requireTargetMember,
-  async (req: AuthRequest, res) => {
+  async (req, res) => {
     const orgId = Number(req.params.orgId);
     const username = String(req.params.username);
 
