@@ -1,18 +1,26 @@
 import { Router } from 'express';
+import { AuthError } from '../errors/AuthError';
+import { ClientError } from '../errors/ClientError';
+import { authSchema } from '../schemas/auth';
 import { login, signup } from '../services/authService';
 import { signToken } from '../utils/jwt';
-import { ClientError } from '../errors/ClientError';
-import { AuthError } from '../errors/AuthError';
 const router = Router();
-import { authSchema } from '../schemas/auth';
 
-router.post('/login', async (req, res) => {
-  const parsed = authSchema.safeParse(req.body);
-  if (!parsed.success) {
-    throw new ClientError(parsed.error.message);
-  }
+const buildAuthResponse = (user: { id: string; username: string }) => {
+  const payload = {
+    userId: user.id,
+    userName: user.username,
+  };
 
-  const { username, password } = parsed.data;
+  return {
+    userId: user.id,
+    userName: user.username,
+    authToken: signToken(payload),
+  };
+};
+
+router.post('/login', validateBody(authSchema), async (req, res) => {
+  const { username, password } = req.body;
 
   const user = await login(username, password);
 
@@ -20,23 +28,12 @@ router.post('/login', async (req, res) => {
     throw new AuthError('Invalid username or password');
   }
 
-  const data = {
-    userId: user.id,
-    userName: user.username,
-  };
-
-  const token = signToken(data);
-  res.status(200).json({ authToken: token });
+  const authResponse = buildAuthResponse(user);
+  res.status(200).json(authResponse);
 });
 
-router.post('/signup', async (req, res) => {
-
-  const parsed = authSchema.safeParse(req.body);
-  if (!parsed.success) {
-    throw new ClientError(parsed.error.message);
-  }
-
-  const { username, password } = parsed.data;
+router.post('/signup', validateBody(authSchema), async (req, res) => {
+  const { username, password } = req.body;
 
   const user = await signup(username, password);
 
@@ -44,14 +41,8 @@ router.post('/signup', async (req, res) => {
     throw new ClientError('Username already exists');
   }
 
-  let data = {
-    userId: user.id,
-    userName: user.username,
-  };
-
-  const token = signToken(data);
-
-  res.status(200).json({ userId: user.id, userName: user.username, authToken: token });
+  const authResponse = buildAuthResponse(user);
+  res.status(200).json(authResponse);
 });
 
 export default router;
