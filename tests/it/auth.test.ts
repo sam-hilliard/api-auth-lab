@@ -116,7 +116,7 @@ describe('Authentication: JWT', () => {
 
     const res = await reqUserById(invalidJWT, user.userId);
 
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(401);
     expect(res.body).toMatchObject({
       error: expect.any(String),
     });
@@ -129,7 +129,7 @@ describe('Authentication: JWT', () => {
 
     const res = await reqUserById(expiredJWT, user.userId);
 
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(401);
     expect(res.body).toMatchObject({
       error: expect.any(String),
     });
@@ -140,7 +140,7 @@ describe('Authentication: JWT', () => {
 
     const res = await reqUserById('', user.userId);
 
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(401);
     expect(res.body).toMatchObject({
       error: expect.any(String),
     });

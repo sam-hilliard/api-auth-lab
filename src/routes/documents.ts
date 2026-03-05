@@ -9,13 +9,12 @@ import {
   updateDocument,
   deleteDocument,
 } from '../services/documentServices';
-import { AuthRequest } from '../types/auth';
 
 const router = Router({ mergeParams: true });
 router.use(requireOrg, requireMember);
 
 // Get documents belonging to an org
-router.get('/', requireOrg, requireMember, async (req: AuthRequest, res) => {
+router.get('/', requireOrg, requireMember, async (req, res) => {
   const orgId = Number(req.params.orgId);
 
   const documents = await getDocumentsByOrg(orgId);
@@ -23,7 +22,7 @@ router.get('/', requireOrg, requireMember, async (req: AuthRequest, res) => {
 });
 
 // Get a document by ID
-router.get('/:id', requireOrg, requireMember, async (req: AuthRequest, res) => {
+router.get('/:id', requireOrg, requireMember, async (req, res) => {
   const orgId = Number(req.params.orgId);
   const docId = Number(req.params.id);
 
@@ -32,7 +31,7 @@ router.get('/:id', requireOrg, requireMember, async (req: AuthRequest, res) => {
 });
 
 // Create a document
-router.post('/', requireOrg, requireMember, async (req: AuthRequest, res) => {
+router.post('/', requireOrg, requireMember, async (req, res) => {
   const orgId = Number(req.params.orgId);
   const userId = Number(req.user.id);
   const { title, content } = req.body;
@@ -45,7 +44,7 @@ router.post('/', requireOrg, requireMember, async (req: AuthRequest, res) => {
   return res.status(201).json(document);
 });
 
-router.patch('/:id', requireOrg, requireMember, requireCreator, async (req: AuthRequest, res) => {
+router.patch('/:id', requireOrg, requireMember, requireCreator, async (req, res) => {
   const orgId = Number(req.params.orgId);
   const docId = Number(req.params.id);
   const { title, content } = req.body;
@@ -58,7 +57,7 @@ router.patch('/:id', requireOrg, requireMember, requireCreator, async (req: Auth
   return res.status(200).json(updated);
 });
 
-router.delete('/:id', requireOrg, requireMember, requireCreator, async (req: AuthRequest, res) => {
+router.delete('/:id', requireOrg, requireMember, requireCreator, async (req, res) => {
   const orgId = Number(req.params.orgId);
   const docId = Number(req.params.id);
 

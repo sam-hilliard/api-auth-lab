@@ -1,11 +1,9 @@
 import { Router } from 'express';
-import { Response } from 'express';
 import { findUserById } from '../services/userService';
-import { AuthRequest } from '../types/auth';
 
 const router = Router();
 
-router.get('/:id', async (req: AuthRequest, res: Response) => {
+router.get('/:id', async (req, res) => {
   const reqId = Number(req.params.id);
   const userId = Number(req.user.id);
 

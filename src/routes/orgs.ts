@@ -10,7 +10,6 @@ import {
   removeMember,
 } from '../services/orgService';
 import { findUserByUsername } from '../services/userService';
-import { AuthRequest } from '../types/auth';
 import documentRoutes from './documents';
 
 const router = Router();

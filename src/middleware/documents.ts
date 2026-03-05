@@ -1,8 +1,7 @@
-import { Response, NextFunction } from 'express';
+import { RequestHandler } from 'express';
 import { isDocumentCreator } from '../services/documentServices';
-import { AuthRequest } from '../types/auth';
 
-export const requireCreator = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const requireCreator: RequestHandler = async (req, res, next) => {
   const docId = Number(req.params.id);
   const userId = Number(req.user.id);
   const orgId = Number(req.params.orgId);
