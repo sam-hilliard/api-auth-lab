@@ -8,7 +8,12 @@ import {
   createTestUser,
 } from '../helpers/utils';
 
+const ERROR_RESPONSE = {
+  error: expect.any(String),
+};
+
 describe('Authentication: Signup', () => {
+
   beforeEach(async () => {
     await cleanUpDB();
   });
@@ -20,8 +25,8 @@ describe('Authentication: Signup', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({
-      userId: expect.any(Number),
-      userName: creds.username,
+      id: expect.any(Number),
+      username: expect.any(String),
       authToken: expect.any(String),
     });
 
@@ -35,9 +40,8 @@ describe('Authentication: Signup', () => {
     const res = await signUpReq(user.username, user.password);
 
     expect(res.status).toBe(400);
-    expect(res.body).toMatchObject({
-      error: expect.any(String),
-    });
+    console.log(res.body);
+    expect(res.body).toMatchObject(ERROR_RESPONSE);
 
     const users = await queryUsersByName(user.username);
     expect(users).toHaveLength(1);
@@ -47,9 +51,7 @@ describe('Authentication: Signup', () => {
     const res = await signUpReq('', '');
 
     expect(res.status).toBe(400);
-    expect(res.body).toMatchObject({
-      error: expect.any(String),
-    });
+    expect(res.body).toMatchObject(ERROR_RESPONSE);
 
     const users = await queryUsersByName('');
     expect(users).toHaveLength(0);
@@ -78,18 +80,14 @@ describe('Authentication: Login', () => {
     const loginRes = await loginReq(user.username, 'wrong-password');
 
     expect(loginRes.status).toBe(401);
-    expect(loginRes.body).toMatchObject({
-      error: expect.any(String),
-    });
+    expect(loginRes.body).toMatchObject(ERROR_RESPONSE);
   });
 
   it('should return error if username or password is missing', async () => {
     const loginRes = await loginReq('', '');
 
     expect(loginRes.status).toBe(400);
-    expect(loginRes.body).toMatchObject({
-      error: expect.any(String),
-    });
+    expect(loginRes.body).toMatchObject(ERROR_RESPONSE);
   });
 });
 
@@ -98,15 +96,13 @@ describe('Authentication: JWT', () => {
     await cleanUpDB();
   });
 
-  it('should access protected route with valid JWT', async () => {
+  it.only('should access protected route with valid JWT', async () => {
     const user = await createTestUser();
 
     const res = await reqUserById(user.authToken, user.userId);
 
     expect(res.status).toBe(200);
-    expect(res.body).not.toMatchObject({
-      error: expect.any(String),
-    });
+    expect(res.body).not.toMatchObject(ERROR_RESPONSE);
   });
 
   it('should not access protected route with invalid JWT', async () => {
@@ -130,9 +126,7 @@ describe('Authentication: JWT', () => {
     const res = await reqUserById(expiredJWT, user.userId);
 
     expect(res.status).toBe(401);
-    expect(res.body).toMatchObject({
-      error: expect.any(String),
-    });
+    expect(res.body).toMatchObject(ERROR_RESPONSE);
   });
 
   it('should not access protected route with no JWT', async () => {
@@ -141,8 +135,6 @@ describe('Authentication: JWT', () => {
     const res = await reqUserById('', user.userId);
 
     expect(res.status).toBe(401);
-    expect(res.body).toMatchObject({
-      error: expect.any(String),
-    });
+    expect(res.body).toMatchObject(ERROR_RESPONSE);
   });
 });

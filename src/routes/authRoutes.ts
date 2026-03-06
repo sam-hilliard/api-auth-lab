@@ -2,20 +2,15 @@ import { Router } from 'express';
 import { AuthError } from '../errors/AuthError';
 import { ClientError } from '../errors/ClientError';
 import { validateBody } from '../middleware/validateBody';
-import { authSchema } from '../schemas/auth';
+import { authSchema, JwtPayload } from '../schemas/auth';
 import { login, signup } from '../services/authService';
 import { User } from '../types/auth';
 import { signToken } from '../utils/jwt';
 const router = Router();
 
-const buildAuthResponse = (user: User) => {
-  const payload = {
-    userId: user.id,
-    userName: user.username,
-  };
-
+const buildAuthResponse = (payload: JwtPayload) => {
   return {
-    ...user,
+    ...payload,
     authToken: signToken(payload),
   };
 };
