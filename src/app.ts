@@ -1,7 +1,7 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { AppError } from './errors/AppError';
 import { authenticateToken } from './middleware/auth';
-import authRoutes from './routes/auth';
+import authRoutes from './routes/authRoutes';
 import orgRoutes from './routes/orgs';
 import userRoutes from './routes/users';
 
@@ -23,7 +23,10 @@ app.use((_req, res) => {
 });
 
 // generic error handler
-app.use((err: unknown, _req: Request, res: Response) => {
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+
+  console.log(err);
+
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       error: err.message,

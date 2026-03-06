@@ -1,9 +1,5 @@
 import jwt from 'jsonwebtoken';
-
-export interface JwtPayload {
-  userId: number;
-  userName: string;
-}
+import { JwtPayload } from '../schemas/auth';
 
 export function signToken(payload: JwtPayload) {
   const JWT_SECRET = process.env.JWT_SECRET;
