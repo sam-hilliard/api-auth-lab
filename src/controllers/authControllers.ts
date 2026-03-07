@@ -1,9 +1,9 @@
-import { login, signup } from '../services/authService';
-import { JwtPayload } from '../schemas/auth';
-import { signToken } from '../utils/jwt';
+import { RequestHandler } from 'express';
 import { AuthError } from '../errors/AuthError';
 import { ClientError } from '../errors/ClientError';
-import { RequestHandler } from 'express';
+import { JwtPayload } from '../schemas/auth';
+import { login, signup } from '../services/authService';
+import { signToken } from '../utils/jwt';
 
 const buildAuthResponse = (payload: JwtPayload) => {
   return {
