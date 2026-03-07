@@ -1,14 +1,14 @@
-import { UserPayload } from './auth';
+import { User } from './userTypes';
 import { Document } from './document';
 import { Org } from './org';
 
 declare global {
   namespace Express {
     interface Request {
-      user: UserPayload;
+      user: User;
       org: Org;
       document: Document;
-      targetUser: UserPayload;
+      targetUser: User;
     }
   }
 }

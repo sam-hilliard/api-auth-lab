@@ -1,5 +1,5 @@
 import { pool } from '../db';
-import { User } from '../types/auth';
+import { User } from '../types/userTypes';
 
 export const findUserById = async (id: number) => {
   const result = await pool.query('SELECT id, username FROM users WHERE id = $1', [id]);

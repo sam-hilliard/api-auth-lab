@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../../src/app';
 import { pool } from '../../src/db';
-import { User } from '../../src/types/auth';
+import { User } from '../../src/types/userTypes';
 import { AuthenticatedTestUser, TestUserCredentials } from './types';
 
 export const cleanUpDB = async () => {

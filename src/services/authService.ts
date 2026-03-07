@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { User } from '../types/auth';
+import { User } from '../types/userTypes';
 import { findUserByUsername, createUser } from './userService';
 
 export async function login(username: string, password: string): Promise<User | null> {
