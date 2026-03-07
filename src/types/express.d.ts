@@ -1,6 +1,6 @@
-import { User } from './userTypes';
 import { Document } from './document';
 import { Org } from './org';
+import { User } from './userTypes';
 
 declare global {
   namespace Express {
