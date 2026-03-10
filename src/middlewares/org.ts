@@ -17,7 +17,7 @@ export const requireOrg: RequestHandler = async (req, res, next) => {
 
   req.org = org;
   next();
-}
+};
 
 export const requireMember: RequestHandler = async (req, res, next) => {
   const userId = Number(req.user.id);
@@ -28,7 +28,7 @@ export const requireMember: RequestHandler = async (req, res, next) => {
   }
 
   next();
-}
+};
 
 export const requireOwner: RequestHandler = async (req, res, next) => {
   const userId = Number(req.user.id);
@@ -39,7 +39,7 @@ export const requireOwner: RequestHandler = async (req, res, next) => {
   }
 
   next();
-}
+};
 
 export const requireTargetMember: RequestHandler = async (req, res, next) => {
   const orgId = Number(req.params.orgId);
@@ -64,4 +64,4 @@ export const requireTargetMember: RequestHandler = async (req, res, next) => {
   req.targetUser = findUser;
 
   next();
-}
+};

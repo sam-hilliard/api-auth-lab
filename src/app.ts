@@ -1,30 +1,24 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { AppError } from './errors/AppError';
-import { authenticateToken } from './middleware/auth';
+import { authenticateToken } from './middlewares/auth';
 import authRoutes from './routes/authRoutes';
-import orgRoutes from './routes/orgs';
-import userRoutes from './routes/users';
+import orgRoutes from './routes/orgRoutes';
+import userRoutes from './routes/userRoutes';
 
 const app = express();
 
 app.use(express.json());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', authenticateToken, userRoutes);
-app.use('/api/orgs', authenticateToken, orgRoutes);
-
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
-});
+// public routes
 
 // 404 handler
 app.use((_req, res) => {
   res.status(404).json({ message: 'Not found' });
 });
 
+// TODO: Create middleware for this
 // generic error handler
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-
   console.log(err);
 
   if (err instanceof AppError) {
@@ -37,5 +31,15 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     });
   }
 });
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok' });
+});
+app.use('/api/auth', authRoutes);
+
+app.use(authenticateToken);
+
+// private routes
+app.use('/api/users', userRoutes);
+app.use('/api/orgs', orgRoutes);
 
 export default app;

@@ -1,7 +1,7 @@
 import { pool } from '../db';
 import { Org } from '../types/org';
 
-export const createOrg = async (orgName: string) => {
+export const insertOrg = async (orgName: string) => {
   const result = await pool.query<Org>('INSERT INTO orgs (name) VALUES ($1) RETURNING id, name', [
     orgName,
   ]);
@@ -63,7 +63,7 @@ export const getMembers = async (orgId: number) => {
   return result.rows;
 };
 
-export const removeMember = async (orgId: number, userId: number) => {
+export const deleteMember = async (orgId: number, userId: number) => {
   const deleteResult = await pool.query(
     `DELETE FROM org_members
      WHERE org_id = $1 AND user_id = $2`,

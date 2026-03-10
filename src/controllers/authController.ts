@@ -23,7 +23,7 @@ export const loginUser: RequestHandler = async (req, res) => {
 
   const authResponse = buildAuthResponse(user);
   res.status(200).json(authResponse);
-}
+};
 
 export const signUpUser: RequestHandler = async (req, res) => {
   const { username, password } = req.body;
@@ -36,4 +36,4 @@ export const signUpUser: RequestHandler = async (req, res) => {
 
   const authResponse = buildAuthResponse(user);
   res.status(200).json(authResponse);
-}
+};

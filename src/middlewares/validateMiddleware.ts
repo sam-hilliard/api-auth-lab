@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express';
-import { Request, NextFunction } from 'express'
 import { z } from 'zod';
 import { ClientError } from '../errors/ClientError';
 
@@ -19,4 +18,4 @@ export const validate =
       }
       next(error);
     }
-};
+  };

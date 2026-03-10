@@ -1,4 +1,3 @@
-// routes/documents.ts
 import { Router } from 'express';
 import { requireCreator } from '../middleware/documents';
 import { requireOrg, requireMember } from '../middleware/org';

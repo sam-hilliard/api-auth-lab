@@ -13,7 +13,6 @@ const ERROR_RESPONSE = {
 };
 
 describe('Authentication: Signup', () => {
-
   beforeEach(async () => {
     await cleanUpDB();
   });
