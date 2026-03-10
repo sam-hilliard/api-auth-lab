@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { createOrg, getOrgById, inviteUser } from '../controllers/orgController';
-import { authenticateToken } from '../middlewares/auth';
-import { requireOrg, requireMember, requireOwner, requireTargetMember } from '../middlewares/org';
+import { requireOrg, requireMember, requireOwner, requireTargetMember } from '../middlewares/orgMiddleware';
 import documentRoutes from './documentRoutes';
 
 const router = Router();
@@ -18,7 +17,6 @@ router.post('/:orgId/invite', requireOrg, requireOwner, inviteUser);
 // remove member
 router.delete(
   '/:orgId/:username',
-  authenticateToken,
   requireOrg,
   requireOwner,
   requireTargetMember,

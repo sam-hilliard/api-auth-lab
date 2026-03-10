@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { AppError } from './errors/AppError';
-import { authenticateToken } from './middlewares/auth';
+import { authenticateToken } from './middlewares/authMiddleware';
 import authRoutes from './routes/authRoutes';
 import orgRoutes from './routes/orgRoutes';
 import userRoutes from './routes/userRoutes';

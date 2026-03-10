@@ -44,7 +44,7 @@ export const getDocument = async (orgId: number, docId: number) => {
   return result.rows[0];
 };
 
-export const createDocument = async (
+export const insertDocument = async (
   orgId: number,
   title: string,
   content: string,

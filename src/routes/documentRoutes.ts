@@ -1,67 +1,28 @@
 import { Router } from 'express';
-import { requireCreator } from '../middleware/documents';
-import { requireOrg, requireMember } from '../middleware/org';
+import { requireCreator } from '../middlewares/documentsMiddleware';
+import { requireOrg, requireMember } from '../middlewares/orgMiddleware';
 import {
-  getDocumentsByOrg,
-  getDocument,
   createDocument,
-  updateDocument,
-  deleteDocument,
-} from '../services/documentServices';
+  getDocById,
+  getOrgDocs,
+  patchDocument,
+  removeDocument,
+} from '../controllers/documentsController';
 
 const router = Router({ mergeParams: true });
 router.use(requireOrg, requireMember);
 
 // Get documents belonging to an org
-router.get('/', requireOrg, requireMember, async (req, res) => {
-  const orgId = Number(req.params.orgId);
-
-  const documents = await getDocumentsByOrg(orgId);
-  return res.status(200).json(documents);
-});
+router.get('/', getOrgDocs);
 
 // Get a document by ID
-router.get('/:id', requireOrg, requireMember, async (req, res) => {
-  const orgId = Number(req.params.orgId);
-  const docId = Number(req.params.id);
-
-  const document = await getDocument(orgId, docId);
-  return res.status(200).json(document);
-});
+router.get('/:id', getDocById);
 
 // Create a document
-router.post('/', requireOrg, requireMember, async (req, res) => {
-  const orgId = Number(req.params.orgId);
-  const userId = Number(req.user.id);
-  const { title, content } = req.body;
+router.post('/', createDocument);
 
-  if (!content || !title) {
-    return res.status(400).json({ error: 'Title and content are required' });
-  }
+router.patch('/:id', requireCreator, patchDocument);
 
-  const document = await createDocument(orgId, title, content, userId);
-  return res.status(201).json(document);
-});
-
-router.patch('/:id', requireOrg, requireMember, requireCreator, async (req, res) => {
-  const orgId = Number(req.params.orgId);
-  const docId = Number(req.params.id);
-  const { title, content } = req.body;
-
-  if (!content || !title) {
-    return res.status(400).json({ error: 'Title and content are required' });
-  }
-
-  const updated = await updateDocument(orgId, docId, title, content);
-  return res.status(200).json(updated);
-});
-
-router.delete('/:id', requireOrg, requireMember, requireCreator, async (req, res) => {
-  const orgId = Number(req.params.orgId);
-  const docId = Number(req.params.id);
-
-  await deleteDocument(orgId, docId);
-  return res.status(200).json({ message: 'Document deleted' });
-});
+router.delete('/:id', requireCreator, removeDocument);
 
 export default router;

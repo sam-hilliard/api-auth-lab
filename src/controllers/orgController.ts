@@ -1,5 +1,3 @@
-// orgController.ts
-
 import { RequestHandler } from 'express';
 import {
   addMember,
