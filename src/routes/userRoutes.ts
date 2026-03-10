@@ -1,6 +1,8 @@
+// userRoutes.ts
+
 import { Router } from 'express';
 import { z } from 'zod';
-import { getUserById } from '../controllers/userControllers';
+import { getUserById } from '../controllers/userController';
 import { validate } from '../middlewares/validateMiddleware';
 
 const router = Router();

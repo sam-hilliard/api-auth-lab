@@ -1,5 +1,14 @@
+// orgController.ts
+
 import { RequestHandler } from 'express';
-import { addMember, getOrg, getMembers, insertOrg, deleteMember, isMemberExists } from '../services/orgService';
+import {
+  addMember,
+  getOrg,
+  getMembers,
+  insertOrg,
+  deleteMember,
+  isMemberExists,
+} from '../services/orgService';
 import { findUserByUsername } from '../services/userService';
 
 export const createOrg: RequestHandler = async (req, res) => {

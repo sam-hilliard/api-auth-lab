@@ -4,9 +4,10 @@ import { findUserByUsername, createUser } from './userService';
 
 export async function login(username: string, password: string): Promise<User | null> {
   const user = await findUserByUsername(username);
-  if (!user) return null;
 
-  const isValid = await bcrypt.compare(password, user.password);
+  if (!user || !user.password) return null;
+
+  const isValid = bcrypt.compare(password, user.password);
   if (!isValid) return null;
 
   return user;
