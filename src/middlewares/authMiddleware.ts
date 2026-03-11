@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
-import { AuthError } from '../errors/AuthError';
+import { AuthenticationError, AuthorizationError } from '../errors/AuthError';
 import { jwtPayloadSchema } from '../schemas/auth';
 
 export const authenticateToken: RequestHandler = (req, _res, next) => {
@@ -13,7 +13,7 @@ export const authenticateToken: RequestHandler = (req, _res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith('Bearer ')) {
-    throw new AuthError('Access token required');
+    throw new AuthenticationError('Access token required');
   }
 
   const token = authHeader.split(' ')[1];
@@ -24,16 +24,26 @@ export const authenticateToken: RequestHandler = (req, _res, next) => {
     decoded = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     const trace = err instanceof Error ? err : undefined;
-    throw new AuthError('Invalid or expired token', trace);
+    throw new AuthenticationError('Invalid or expired token', trace);
   }
 
-  console.log(decoded);
   const parsed = jwtPayloadSchema.safeParse(decoded);
 
   if (!parsed.success) {
-    throw new AuthError('Invalid token payload');
+    throw new AuthenticationError('Invalid token payload');
   }
 
   req.user = parsed.data;
+  next();
+};
+
+export const authorizeSelf: RequestHandler = (req, res, next) => {
+  const id = Number(req.params.id);
+  const userId = req.user.id;
+
+  if (userId !== id) {
+    return next(new AuthorizationError(`Cannot access user with ID ${id}`));
+  }
+
   next();
 };

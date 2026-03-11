@@ -3,14 +3,11 @@ import { z } from 'zod';
 import { ClientError } from '../errors/ClientError';
 
 export const validate =
-  (schema: z.ZodSchema): RequestHandler =>
+  <T extends z.ZodTypeAny>(schema: T, property: 'body' | 'query' | 'params'): RequestHandler =>
   (req, res, next) => {
     try {
-      schema.parse({
-        body: req.body,
-        query: req.query,
-        params: req.params,
-      });
+      const parsed = schema.parse(req[property]);
+      req[property] = parsed;
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
