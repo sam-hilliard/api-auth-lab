@@ -3,9 +3,10 @@ import { AuthenticationError } from '../errors/AuthError';
 import { ClientError } from '../errors/ClientError';
 import { login, signup } from '../services/authService';
 import { buildAuthResponse } from '../utils/auth';
+import { AuthSchema } from '../schemas/authSchema';
 
 export const loginUser: RequestHandler = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body as AuthSchema;
 
   const user = await login(username, password);
 
@@ -18,7 +19,7 @@ export const loginUser: RequestHandler = async (req, res) => {
 };
 
 export const signUpUser: RequestHandler = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body as AuthSchema;
 
   const user = await signup(username, password);
 

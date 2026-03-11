@@ -4,7 +4,7 @@ import { validate } from '../middlewares/validateMiddleware';
 import { authSchema } from '../schemas/auth';
 const router = Router();
 
-router.post('/login', validate(authSchema), loginUser);
-router.post('/signup', validate(authSchema), signUpUser);
+router.post('/login', validate(authSchema, 'body'), loginUser);
+router.post('/signup', validate(authSchema, 'body'), signUpUser);
 
 export default router;
