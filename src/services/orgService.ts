@@ -1,5 +1,9 @@
 import { pool } from '../db';
+import { AppError } from '../errors/AppError';
+import { ClientError } from '../errors/ClientError';
+import { NotFoundError } from '../errors/NotFoundError';
 import { Org } from '../types/org';
+import { findUserByUsername } from './userService';
 
 export const insertOrg = async (orgName: string) => {
   const result = await pool.query<Org>('INSERT INTO orgs (name) VALUES ($1) RETURNING id, name', [
@@ -71,4 +75,32 @@ export const deleteMember = async (orgId: number, userId: number) => {
   );
 
   return deleteResult.rowCount === 1;
+};
+
+export const inviteUserToOrg = async (orgId: number, username: string) => {
+  const findUser = await findUserByUsername(username);
+
+  if (!findUser) {
+    throw new NotFoundError(`User does not exist with the username: ${username}`);
+  }
+
+  const userId = findUser.id;
+  const memberExists = await isMemberExists(orgId, userId);
+  if (memberExists) {
+    throw new ClientError('User is already a member of the org');
+  }
+
+  return await addMember(orgId, userId, 'member');
+};
+
+export const removeMemberFromOrg = async (orgId: number, username: string) => {
+  const findUser = await findUserByUsername(username);
+  if (!findUser) throw new NotFoundError('User not found');
+
+  const userId = Number(findUser.id);
+
+  const removed = await deleteMember(orgId, userId);
+  if (!removed) {
+    throw new AppError(500, 'Unable to remove member.');
+  }
 };
