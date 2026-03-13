@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import { TypedRequest } from '../types/TypedRequest';
+import { Request, Response } from 'express'
 import {
   addMember,
   getOrg,
@@ -8,9 +7,8 @@ import {
   inviteUserToOrg,
   removeMemberFromOrg,
 } from '../services/orgService';
-import { OrgParams, DeleteParams, InviteUserBody, CreateOrgBody } from '../schemas/orgSchema';
 
-export const createOrg = async (req: TypedRequest<CreateOrgBody>, res: Response) => {
+export const createOrg = async (req: Request, res: Response) => {
   const name = req.body.name;
   const userId = req.user.id;
 
@@ -20,7 +18,7 @@ export const createOrg = async (req: TypedRequest<CreateOrgBody>, res: Response)
   res.status(201).json(responseData);
 };
 
-export const getOrgById = async (req: Request<OrgParams>, res: Response) => {
+export const getOrgById = async (req: Request, res: Response) => {
   const orgId = Number(req.params.orgId);
 
   const org = await getOrg(orgId);
@@ -31,7 +29,7 @@ export const getOrgById = async (req: Request<OrgParams>, res: Response) => {
   });
 };
 
-export const inviteUser = async (req: Request<OrgParams, InviteUserBody>, res: Response) => {
+export const inviteUser = async (req: Request, res: Response) => {
   const username = req.body.username;
   const orgId = req.params.orgId;
 
