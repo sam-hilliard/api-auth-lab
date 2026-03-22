@@ -1,6 +1,7 @@
-import { RequestHandler } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { getOrg, isMemberExists, isOwner } from '../services/orgService';
 import { findUserByUsername } from '../services/userService';
+import { AuthenticatedRequest } from '../types/reqTypes';
 
 export const requireOrg: RequestHandler = async (req, res, next) => {
   const orgId = Number(req.params.orgId);
@@ -20,7 +21,8 @@ export const requireOrg: RequestHandler = async (req, res, next) => {
 };
 
 export const requireMember: RequestHandler = async (req, res, next) => {
-  const userId = Number(req.user.id);
+  const { user } = req as AuthenticatedRequest;
+  const userId = user.id;
   const orgId = Number(req.params.orgId);
 
   if (!(await isMemberExists(orgId, userId))) {
@@ -30,8 +32,9 @@ export const requireMember: RequestHandler = async (req, res, next) => {
   next();
 };
 
-export const requireOwner: RequestHandler = async (req, res, next) => {
-  const userId = Number(req.user.id);
+export const requireOwner = async (req: Request, res: Response, next: NextFunction) => {
+  const { user } = req as AuthenticatedRequest;
+  const userId = user.id;
   const orgId = Number(req.params.orgId);
 
   if (!(await isOwner(orgId, userId))) {
@@ -41,7 +44,8 @@ export const requireOwner: RequestHandler = async (req, res, next) => {
   next();
 };
 
-export const requireTargetMember: RequestHandler = async (req, res, next) => {
+// TODO: Move to service
+export const requireTargetMember = async (req: Request, res: Response, next: NextFunction) => {
   const orgId = Number(req.params.orgId);
   const targetUsername = String(req.params.username);
 

@@ -1,5 +1,4 @@
-import { RequestHandler } from 'express';
-
+import { Request, Response } from 'express'
 import {
   getDocumentsByOrg,
   getDocument,
@@ -7,15 +6,17 @@ import {
   updateDocument,
   deleteDocument,
 } from '../services/documentServices';
+import { AuthenticatedRequest } from '../types/reqTypes';
 
-export const getOrgDocs: RequestHandler = async (req, res) => {
+
+export const getOrgDocs = async (req: Request, res: Response) => {
   const orgId = Number(req.params.orgId);
 
   const documents = await getDocumentsByOrg(orgId);
   return res.status(200).json(documents);
 };
 
-export const getDocById: RequestHandler = async (req, res) => {
+export const getDocById = async (req: Request, res: Response) => {
   const orgId = Number(req.params.orgId);
   const docId = Number(req.params.id);
 
@@ -23,9 +24,10 @@ export const getDocById: RequestHandler = async (req, res) => {
   return res.status(200).json(document);
 };
 
-export const createDocument: RequestHandler = async (req, res) => {
+export const createDocument = async (req: Request, res: Response) => {
   const orgId = Number(req.params.orgId);
-  const userId = Number(req.user.id);
+  const { user } = req as AuthenticatedRequest;
+  const userId = Number(user.id);
   const { title, content } = req.body;
 
   if (!content || !title) {
@@ -36,7 +38,7 @@ export const createDocument: RequestHandler = async (req, res) => {
   return res.status(201).json(document);
 };
 
-export const patchDocument: RequestHandler = async (req, res) => {
+export const patchDocument = async (req: Request, res: Response) => {
   const orgId = Number(req.params.orgId);
   const docId = Number(req.params.id);
   const { title, content } = req.body;
@@ -49,7 +51,7 @@ export const patchDocument: RequestHandler = async (req, res) => {
   return res.status(200).json(updated);
 };
 
-export const removeDocument: RequestHandler = async (req, res) => {
+export const removeDocument = async (req: Request, res: Response) => {
   const orgId = Number(req.params.orgId);
   const docId = Number(req.params.id);
 

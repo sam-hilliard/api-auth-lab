@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { JwtPayload } from '../schemas/auth';
+import { JwtPayload } from '../schemas/authSchema';
 
 export function signToken(payload: JwtPayload) {
   const JWT_SECRET = process.env.JWT_SECRET;

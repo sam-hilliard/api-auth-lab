@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { createOrg, getOrgById, inviteUser, removeMember } from '../controllers/orgController';
 import { requireOrg, requireMember, requireOwner, requireTargetMember } from '../middlewares/orgMiddleware';
-import documentRoutes from './documentRoutes';
-import { createOrgBodySchema, inviteUserBodySchema, orgParamsSchema, deleteParamsSchema } from '../schemas/orgSchema';
 import { validate } from '../middlewares/validateMiddleware';
+import { createOrgBodySchema, inviteUserBodySchema, orgParamsSchema, deleteParamsSchema } from '../schemas/orgSchema';
+import documentRoutes from './documentRoutes';
 
 const router = Router();
 

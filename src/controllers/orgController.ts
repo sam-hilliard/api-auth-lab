@@ -7,10 +7,12 @@ import {
   inviteUserToOrg,
   removeMemberFromOrg,
 } from '../services/orgService';
+import { AuthenticatedRequest } from '../types/reqTypes';
 
 export const createOrg = async (req: Request, res: Response) => {
   const name = req.body.name;
-  const userId = req.user.id;
+  const { user } = req as AuthenticatedRequest;
+  const userId = user.id;
 
   const org = await insertOrg(name);
   const responseData = await addMember(org.id, userId, 'owner');
@@ -31,14 +33,15 @@ export const getOrgById = async (req: Request, res: Response) => {
 
 export const inviteUser = async (req: Request, res: Response) => {
   const username = req.body.username;
-  const orgId = req.params.orgId;
+  const orgId = Number(req.params.orgId);
 
   const member = await inviteUserToOrg(orgId, username);
   return res.status(201).json(member);
 };
 
-export const removeMember = async (req: Request<DeleteParams>, res: Response) => {
-  const { orgId, username } = req.params;
+export const removeMember = async (req: Request, res: Response) => {
+  const orgId = Number(req.params.orgId);
+  const username = req.body.username;
   await removeMemberFromOrg(orgId, username);
 
   return res.status(204).send();

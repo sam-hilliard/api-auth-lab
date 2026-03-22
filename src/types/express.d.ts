@@ -1,5 +1,4 @@
-import { Document } from './documentTypes';
-import { Org } from './orgTypes';
+import { Org } from './orgTypes'
 import { User } from './userTypes';
 
 declare global {
@@ -7,7 +6,7 @@ declare global {
     interface Request {
       user?: User;
       org?: Org;
-      document?: Document;
+      targetUser?: User;
     }
   }
 }

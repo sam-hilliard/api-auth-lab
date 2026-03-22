@@ -2,7 +2,7 @@ import { pool } from '../db';
 import { AppError } from '../errors/AppError';
 import { ClientError } from '../errors/ClientError';
 import { NotFoundError } from '../errors/NotFoundError';
-import { Org } from '../types/org';
+import { Org } from '../types/orgTypes';
 import { findUserByUsername } from './userService';
 
 export const insertOrg = async (orgName: string) => {

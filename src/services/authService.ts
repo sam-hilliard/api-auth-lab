@@ -1,19 +1,18 @@
 import bcrypt from 'bcrypt';
-import { User } from '../types/userTypes';
 import { findUserByUsername, createUser } from './userService';
 
-export async function login(username: string, password: string): Promise<User | null> {
+export const login = async (username: string, password: string) => {
   const user = await findUserByUsername(username);
 
   if (!user || !user.password) return null;
 
-  const isValid = bcrypt.compare(password, user.password);
+  const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) return null;
 
   return user;
-}
+};
 
-export async function signup(username: string, password: string): Promise<User | null> {
+export const signup = async (username: string, password: string) => {
   const existing = await findUserByUsername(username);
   if (existing) return null;
 
@@ -21,4 +20,4 @@ export async function signup(username: string, password: string): Promise<User |
   const user = await createUser(username, hashedPassword);
 
   return user;
-}
+};

@@ -1,5 +1,5 @@
 import { pool } from '../db';
-import { Document } from '../types/document';
+import { Document } from '../types/documentTypes';
 
 export const getDocumentsByOrg = async (orgId: number) => {
   const result = await pool.query(

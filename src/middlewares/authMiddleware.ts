@@ -1,7 +1,8 @@
 import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import { AuthenticationError, AuthorizationError } from '../errors/AuthError';
-import { jwtPayloadSchema } from '../schemas/auth';
+import { jwtPayloadSchema } from '../schemas/authSchema';
+import { AuthenticatedRequest } from '../types/reqTypes';
 
 export const authenticateToken: RequestHandler = (req, _res, next) => {
   const JWT_SECRET = process.env.JWT_SECRET;
@@ -37,11 +38,11 @@ export const authenticateToken: RequestHandler = (req, _res, next) => {
   next();
 };
 
-export const authorizeSelf: RequestHandler = (req, res, next) => {
+export const authorizeSelf: RequestHandler = (req, _res, next) => {
+  const { user } = req as AuthenticatedRequest;
   const id = Number(req.params.id);
-  const userId = req.user.id;
 
-  if (userId !== id) {
+  if (user.id !== id) {
     return next(new AuthorizationError(`Cannot access user with ID ${id}`));
   }
 
