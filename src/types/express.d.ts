@@ -1,4 +1,4 @@
-import { Org } from './orgTypes'
+import { Org } from './orgTypes';
 import { User } from './userTypes';
 
 declare global {

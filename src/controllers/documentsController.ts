@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response } from 'express';
 import {
   getDocumentsByOrg,
   getDocument,
@@ -7,7 +7,6 @@ import {
   deleteDocument,
 } from '../services/documentServices';
 import { AuthenticatedRequest } from '../types/reqTypes';
-
 
 export const getOrgDocs = async (req: Request, res: Response) => {
   const orgId = Number(req.params.orgId);
@@ -30,10 +29,6 @@ export const createDocument = async (req: Request, res: Response) => {
   const userId = Number(user.id);
   const { title, content } = req.body;
 
-  if (!content || !title) {
-    return res.status(400).json({ error: 'Title and content are required' });
-  }
-
   const document = await insertDocument(orgId, title, content, userId);
   return res.status(201).json(document);
 };
@@ -42,10 +37,6 @@ export const patchDocument = async (req: Request, res: Response) => {
   const orgId = Number(req.params.orgId);
   const docId = Number(req.params.id);
   const { title, content } = req.body;
-
-  if (!content || !title) {
-    return res.status(400).json({ error: 'Title and content are required' });
-  }
 
   const updated = await updateDocument(orgId, docId, title, content);
   return res.status(200).json(updated);

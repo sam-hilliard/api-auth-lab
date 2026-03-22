@@ -1,4 +1,4 @@
-import {  RequestHandler, Router } from 'express';
+import { Router } from 'express';
 import {
   createDocument,
   getDocById,
@@ -8,21 +8,29 @@ import {
 } from '../controllers/documentsController';
 import { requireCreator } from '../middlewares/documentsMiddleware';
 import { requireOrg, requireMember } from '../middlewares/orgMiddleware';
+import { validate } from '../middlewares/validateMiddleware';
+import {
+  documentParamsSchema,
+  createDocumentSchema,
+  patchDocumentSchema,
+} from '../schemas/documentSchema';
 
 const router = Router({ mergeParams: true });
-router.use(requireOrg as RequestHandler, requireMember);
+router.use(requireOrg, requireMember);
 
 // Get documents belonging to an org
-router.get('/', getOrgDocs as RequestHandler);
+router.get('/', getOrgDocs);
+
+router.use(validate(documentParamsSchema, 'params'));
 
 // Get a document by ID
-router.get('/:id', getDocById as RequestHandler);
+router.get('/:id', getDocById);
 
 // Create a document
-router.post('/', createDocument as RequestHandler);
+router.post('/', validate(createDocumentSchema, 'body'), createDocument);
 
-router.patch('/:id', requireCreator as RequestHandler, patchDocument as RequestHandler);
+router.patch('/:id', validate(patchDocumentSchema, 'body'), requireCreator, patchDocument);
 
-router.delete('/:id', requireCreator as RequestHandler, removeDocument as RequestHandler);
+router.delete('/:id', requireCreator, removeDocument);
 
 export default router;

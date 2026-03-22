@@ -9,7 +9,11 @@ import { userParamsSchema } from '../schemas/userSchema';
 
 const router = Router();
 
-
-router.get('/:id', validate(userParamsSchema, 'params'), authorizeSelf as RequestHandler, getUserById);
+router.get(
+  '/:id',
+  validate(userParamsSchema, 'params'),
+  authorizeSelf as RequestHandler,
+  getUserById,
+);
 
 export default router;
