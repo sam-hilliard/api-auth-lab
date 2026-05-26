@@ -12,7 +12,9 @@ export const createOrgBodySchema = z.object({
   name: z.string().min(1),
 });
 
-export const deleteParamsSchema = orgParamsSchema.extend(inviteUserBodySchema);
+export const deleteParamsSchema = orgParamsSchema.extend({
+  ...inviteUserBodySchema.shape,
+});
 
 export type OrgParams = z.infer<typeof orgParamsSchema>;
 export type InviteUserBody = z.infer<typeof inviteUserBodySchema>;
