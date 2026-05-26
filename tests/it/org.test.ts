@@ -143,7 +143,7 @@ describe('Org', () => {
 
       const res = await removeOrgMemberReq(orgId, member.username, owner.authToken);
 
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(204);
     });
 
     it('should not allow a member to remove another member', async () => {

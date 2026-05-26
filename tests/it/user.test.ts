@@ -18,8 +18,9 @@ describe('User: Get User By ID', () => {
 
     const res = await userDetailsReq(testUser2.userId, testUser1.authToken);
 
-    expect(res.status).toBe(401);
-    expect(res.body).toMatchObject({
+    expect(res.status).toBe(403);
+    const body = res.body;
+    expect(body).toMatchObject({
       error: expect.any(String),
     });
   });

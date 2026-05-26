@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { AppError } from './errors/AppError';
 import { authenticateToken } from './middlewares/authMiddleware';
 import authRoutes from './routes/authRoutes';
@@ -28,7 +28,7 @@ app.use((_req, res) => {
 
 // TODO: Create middleware for this
 // generic error handler
-app.use((err: unknown, _req: Request, res: Response) => {
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   console.log(err);
 
   if (err instanceof AppError) {

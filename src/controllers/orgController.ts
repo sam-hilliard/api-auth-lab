@@ -41,7 +41,7 @@ export const inviteUser = async (req: Request, res: Response) => {
 
 export const removeMember = async (req: Request, res: Response) => {
   const orgId = Number(req.params.orgId);
-  const username = req.body.username;
+  const username = String(req.params.username);
   await removeMemberFromOrg(orgId, username);
 
   return res.status(204).send();

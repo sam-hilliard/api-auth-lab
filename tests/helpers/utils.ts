@@ -61,7 +61,7 @@ export const createTestUser = async () => {
   let signupRes = await signUpReq(creds.username, creds.password);
   expect(signupRes.status).toBe(200);
   const authToken = signupRes.body.authToken;
-  const userId = signupRes.body.userId;
+  const userId = signupRes.body.id;
   const testUser: AuthenticatedTestUser = { ...creds, authToken, userId };
 
   return testUser;
