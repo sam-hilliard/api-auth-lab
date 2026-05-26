@@ -34,6 +34,13 @@ module.exports = [
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
 
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+        },
+      ],
+
       // Import & unused cleanup
       'unused-imports/no-unused-imports': 'error',
       'import/order': ['warn', { alphabetize: { order: 'asc' } }],
