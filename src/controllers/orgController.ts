@@ -1,12 +1,6 @@
 import { Request, Response } from 'express';
-import {
-  addMember,
-  getOrg,
-  getMembers,
-  insertOrg,
-  inviteUserToOrg,
-  removeMemberFromOrg,
-} from '../services/orgService';
+import { getOrg, getMembers, insertOrg } from '../repositories/orgRepository';
+import { inviteUserToOrg, removeMemberFromOrg, addMember } from '../services/orgService';
 import { AuthenticatedRequest } from '../types/reqTypes';
 
 export const createOrg = async (req: Request, res: Response) => {

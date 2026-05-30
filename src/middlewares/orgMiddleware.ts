@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { getOrg, isMemberExists, isOwner } from '../services/orgService';
+import { getOrg } from '../repositories/orgRepository';
+import { isMemberExists, isOwner } from '../services/orgService';
 import { findUserByUsername } from '../services/userService';
 import { AuthenticatedRequest } from '../types/reqTypes';
 
