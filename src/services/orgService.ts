@@ -8,7 +8,7 @@ import {
   getOrg,
   getMembers,
 } from '../repositories/orgRepository';
-import { findUserByUsername } from './userService';
+import { findUserByUsername } from '../repositories/userRepository';
 
 export const isOwner = async (orgId: number, userId: number) => {
   const member = await getMember(orgId, userId);

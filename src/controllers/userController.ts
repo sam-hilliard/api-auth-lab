@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { findUserById } from '../services/userService';
+import { findUserById } from '../repositories/userRepository';
 
 export const getUserById: RequestHandler = async (req, res) => {
   const id = Number(req.params.id);

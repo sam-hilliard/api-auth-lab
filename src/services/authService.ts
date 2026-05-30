@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { findUserByUsername, createUser } from './userService';
+import { findUserByUsername, createUser } from '../repositories/userRepository';
 
 export const login = async (username: string, password: string) => {
   const user = await findUserByUsername(username);

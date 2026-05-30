@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { getOrg } from '../repositories/orgRepository';
+import { findUserByUsername } from '../repositories/userRepository';
 import { isMemberExists, isOwner } from '../services/orgService';
-import { findUserByUsername } from '../services/userService';
 import { AuthenticatedRequest } from '../types/reqTypes';
 
 export const requireOrg: RequestHandler = async (req, res, next) => {
