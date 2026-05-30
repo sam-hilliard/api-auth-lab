@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { isDocumentCreator } from '../services/documentServices';
+import { isDocumentCreator } from '../repositories/documentRepository';
 import { AuthenticatedRequest } from '../types/reqTypes';
 
 export const requireCreator: RequestHandler = async (req, res, next) => {

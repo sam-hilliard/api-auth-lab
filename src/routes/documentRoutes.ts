@@ -5,8 +5,8 @@ import {
   getOrgDocs,
   patchDocument,
   removeDocument,
-} from '../controllers/documentsController';
-import { requireCreator } from '../middlewares/documentsMiddleware';
+} from '../controllers/documentController';
+import { requireCreator } from '../middlewares/documentMiddleware';
 import { requireOrg, requireMember } from '../middlewares/orgMiddleware';
 import { validate } from '../middlewares/validateMiddleware';
 import {

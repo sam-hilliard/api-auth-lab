@@ -5,7 +5,7 @@ import {
   insertDocument,
   updateDocument,
   deleteDocument,
-} from '../services/documentServices';
+} from '../repositories/documentRepository';
 import { AuthenticatedRequest } from '../types/reqTypes';
 
 export const getOrgDocs = async (req: Request, res: Response) => {
