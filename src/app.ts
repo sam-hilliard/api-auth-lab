@@ -1,4 +1,6 @@
 import express from 'express';
+import helmet from 'helmet';
+import morgan from 'morgan';
 import { authenticateToken } from './middlewares/authMiddleware';
 import { errorHandler } from './middlewares/errorMiddleware';
 import authRoutes from './routes/authRoutes';
@@ -7,7 +9,17 @@ import userRoutes from './routes/userRoutes';
 
 const app = express();
 
+// security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  }),
+);
+
 app.use(express.json());
+
+// logging
+app.use(morgan('combined'));
 
 // public routes
 app.get('/api/health', (_req, res) => {
