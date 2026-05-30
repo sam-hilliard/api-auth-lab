@@ -15,7 +15,7 @@ export const loginUser: RequestHandler = async (req, res) => {
   }
 
   const authResponse = buildAuthResponse(user);
-  res.status(201).json(authResponse);
+  res.status(200).json(authResponse);
 };
 
 export const signUpUser: RequestHandler = async (req, res) => {
@@ -28,5 +28,5 @@ export const signUpUser: RequestHandler = async (req, res) => {
   }
 
   const authResponse = buildAuthResponse(user);
-  res.status(200).json(authResponse);
+  res.status(201).json(authResponse);
 };

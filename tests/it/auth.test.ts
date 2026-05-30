@@ -22,7 +22,7 @@ describe('Authentication: Signup', () => {
 
     const res = await signUpReq(creds.username, creds.password);
 
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
     expect(res.body).toMatchObject({
       id: expect.any(Number),
       username: expect.any(String),
@@ -95,7 +95,7 @@ describe('Authentication: JWT', () => {
     await cleanUpDB();
   });
 
-  it.only('should access protected route with valid JWT', async () => {
+  it('should access protected route with valid JWT', async () => {
     const user = await createTestUser();
 
     const res = await reqUserById(user.authToken, user.userId);

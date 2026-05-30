@@ -59,7 +59,6 @@ export const inviteOrgMemberReq = async (orgId: number, username: string, authTo
 export const createTestUser = async () => {
   const creds: TestUserCredentials = buildUser();
   let signupRes = await signUpReq(creds.username, creds.password);
-  expect(signupRes.status).toBe(200);
   const authToken = signupRes.body.authToken;
   const userId = signupRes.body.id;
   const testUser: AuthenticatedTestUser = { ...creds, authToken, userId };
