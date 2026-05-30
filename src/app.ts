@@ -1,6 +1,6 @@
-import express, { Request, Response, NextFunction } from 'express';
-import { AppError } from './errors/AppError';
+import express from 'express';
 import { authenticateToken } from './middlewares/authMiddleware';
+import { errorHandler } from './middlewares/errorMiddleware';
 import authRoutes from './routes/authRoutes';
 import orgRoutes from './routes/orgRoutes';
 import userRoutes from './routes/userRoutes';
@@ -26,20 +26,6 @@ app.use((_req, res) => {
   res.status(404).json({ message: 'Not found' });
 });
 
-// TODO: Create middleware for this
-// generic error handler
-app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-  console.log(err);
-
-  if (err instanceof AppError) {
-    res.status(err.statusCode).json({
-      error: err.message,
-    });
-  } else {
-    res.status(500).json({
-      error: 'Internal Server Error',
-    });
-  }
-});
+app.use(errorHandler);
 
 export default app;
