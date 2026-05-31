@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import { findUserByUsername, createUser } from '../../src/repositories/userRepository';
-import { login, signup } from '../../src/services/authService';
+import { findUserByUsername, createUser } from '../../../src/repositories/userRepository';
+import { login, signup } from '../../../src/services/authService';
 
-jest.mock('../../src/repositories/userRepository');
+jest.mock('../../../src/repositories/userRepository');
 jest.mock('bcrypt');
 
 const mockFindUserByUsername = jest.mocked(findUserByUsername);

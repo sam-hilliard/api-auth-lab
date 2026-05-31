@@ -1,15 +1,15 @@
-import { AppError } from '../../src/errors/AppError';
-import { ClientError } from '../../src/errors/ClientError';
-import { NotFoundError } from '../../src/errors/NotFoundError';
+import { AppError } from '../../../src/errors/AppError';
+import { ClientError } from '../../../src/errors/ClientError';
+import { NotFoundError } from '../../../src/errors/NotFoundError';
 import {
   getMember,
   insertMember,
   deleteMember,
   getOrg,
   getMembers,
-} from '../../src/repositories/orgRepository';
+} from '../../../src/repositories/orgRepository';
 
-import { findUserByUsername } from '../../src/repositories/userRepository';
+import { findUserByUsername } from '../../../src/repositories/userRepository';
 
 import {
   isOwner,
@@ -17,10 +17,10 @@ import {
   isMemberExists,
   inviteUserToOrg,
   removeMemberFromOrg,
-} from '../../src/services/orgService';
+} from '../../../src/services/orgService';
 
-jest.mock('../../src/repositories/orgRepository');
-jest.mock('../../src/repositories/userRepository');
+jest.mock('../../../src/repositories/orgRepository');
+jest.mock('../../../src/repositories/userRepository');
 
 const mockGetMember = jest.mocked(getMember);
 const mockInsertMember = jest.mocked(insertMember);
