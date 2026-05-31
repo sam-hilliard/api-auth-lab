@@ -10,7 +10,7 @@
     "test": "jest tests --runInBand",
     "test:unit": "jest tests/unit",
     "test:it": "jest tests/it --runInBand",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage --runInBand",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write .",
