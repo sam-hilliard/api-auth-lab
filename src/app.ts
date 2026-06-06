@@ -3,10 +3,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { authenticateToken } from './middlewares/authMiddleware';
 import { errorHandler } from './middlewares/errorMiddleware';
+import { apiRateLimit } from './middlewares/rateLimitMiddleware';
 import authRoutes from './routes/authRoutes';
 import orgRoutes from './routes/orgRoutes';
 import userRoutes from './routes/userRoutes';
-import { apiRateLimit } from './middlewares/rateLimitMiddleware';
 
 const app = express();
 
