@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import {
   createOrg,
   getOrgById,
@@ -12,7 +13,7 @@ jest.mock('../../../src/repositories/orgRepository');
 jest.mock('../../../src/services/orgService');
 
 const mockRes = () => {
-  const res: any = {};
+  const res = {} as Response;
   res.status = jest.fn().mockReturnValue(res);
   res.json = jest.fn().mockReturnValue(res);
   res.send = jest.fn().mockReturnValue(res);
@@ -21,9 +22,9 @@ const mockRes = () => {
 
 describe('createOrg', () => {
   it('creates org and adds user as owner', async () => {
-    const req: any = {
+    const req = {
       body: { name: 'Test Org' },
-      user: { id: 1 },
+      user: { id: 1, username: 'testuser' },
     };
     const res = mockRes();
 
@@ -33,7 +34,7 @@ describe('createOrg', () => {
       members: [{ userId: 1, role: 'owner' }],
     });
 
-    await createOrg(req, res);
+    await createOrg(req as Request, res);
 
     expect(orgRepo.insertOrg).toHaveBeenCalledWith('Test Org');
     expect(orgService.addMember).toHaveBeenCalledWith(10, 1, 'owner');
@@ -48,7 +49,7 @@ describe('createOrg', () => {
 
 describe('getOrgById', () => {
   it('returns org with members', async () => {
-    const req: any = { params: { orgId: '5' } };
+    const req = { params: { orgId: '5' } };
     const res = mockRes();
 
     (orgRepo.getOrg as jest.Mock).mockResolvedValue({
@@ -58,7 +59,7 @@ describe('getOrgById', () => {
 
     (orgRepo.getMembers as jest.Mock).mockResolvedValue([{ id: 1, userId: 1 }]);
 
-    await getOrgById(req, res);
+    await getOrgById(req as unknown as Request, res);
 
     expect(orgRepo.getOrg).toHaveBeenCalledWith(5);
     expect(orgRepo.getMembers).toHaveBeenCalledWith(5);
@@ -74,7 +75,7 @@ describe('getOrgById', () => {
 
 describe('inviteUser', () => {
   it('invites user to org successfully', async () => {
-    const req: any = {
+    const req = {
       params: { orgId: '7' },
       body: { username: 'john' },
     };
@@ -85,7 +86,7 @@ describe('inviteUser', () => {
       username: 'john',
     });
 
-    await inviteUser(req, res);
+    await inviteUser(req as unknown as Request, res);
 
     expect(orgService.inviteUserToOrg).toHaveBeenCalledWith(7, 'john');
 
@@ -97,7 +98,7 @@ describe('inviteUser', () => {
   });
 
   it('propagates NotFoundError when user does not exist', async () => {
-    const req: any = {
+    const req = {
       params: { orgId: '7' },
       body: { username: 'missingUser' },
     };
@@ -107,11 +108,11 @@ describe('inviteUser', () => {
       new Error('User does not exist with the username: missingUser'),
     );
 
-    await expect(inviteUser(req, res)).rejects.toThrow();
+    await expect(inviteUser(req as unknown as Request, res)).rejects.toThrow();
   });
 
   it('throws ClientError when user already member', async () => {
-    const req: any = {
+    const req = {
       params: { orgId: '7' },
       body: { username: 'john' },
     };
@@ -121,20 +122,20 @@ describe('inviteUser', () => {
       new Error('User is already a member of the org'),
     );
 
-    await expect(inviteUser(req, res)).rejects.toThrow();
+    await expect(inviteUser(req as unknown as Request, res)).rejects.toThrow();
   });
 });
 
 describe('removeMember', () => {
   it('removes member successfully', async () => {
-    const req: any = {
+    const req = {
       params: { orgId: '3', username: 'john' },
     };
     const res = mockRes();
 
     (orgService.removeMemberFromOrg as jest.Mock).mockResolvedValue(undefined);
 
-    await removeMember(req, res);
+    await removeMember(req as unknown as Request, res);
 
     expect(orgService.removeMemberFromOrg).toHaveBeenCalledWith(3, 'john');
 
@@ -143,7 +144,7 @@ describe('removeMember', () => {
   });
 
   it('throws error when removal fails', async () => {
-    const req: any = {
+    const req = {
       params: { orgId: '3', username: 'john' },
     };
     const res = mockRes();
@@ -152,6 +153,6 @@ describe('removeMember', () => {
       new Error('Unable to remove member.'),
     );
 
-    await expect(removeMember(req, res)).rejects.toThrow();
+    await expect(removeMember(req as unknown as Request, res)).rejects.toThrow();
   });
 });

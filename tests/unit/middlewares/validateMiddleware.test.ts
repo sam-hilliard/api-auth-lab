@@ -1,4 +1,4 @@
-import { Request, NextFunction } from 'express';
+import { Request, NextFunction, Response } from 'express';
 import { z } from 'zod';
 
 import { ClientError } from '../../../src/errors/ClientError';
@@ -34,7 +34,7 @@ describe('validate middleware', () => {
 
       const middleware = validate(schema, 'body');
 
-      await middleware(req as Request, {} as any, next);
+      await middleware(req as Request, {} as Response, next);
 
       expect(req.body).toEqual({
         username: 'john',
@@ -53,7 +53,7 @@ describe('validate middleware', () => {
 
       const middleware = validate(schema, 'body');
 
-      await middleware(req as Request, {} as any, next);
+      await middleware(req as Request, {} as Response, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(ClientError));
     });
@@ -71,7 +71,7 @@ describe('validate middleware', () => {
 
       const middleware = validate(schema, 'query');
 
-      await middleware(req as Request, {} as any, next);
+      await middleware(req as Request, {} as Response, next);
 
       expect(req.query).toEqual({
         page: 1,
@@ -87,7 +87,7 @@ describe('validate middleware', () => {
 
       const middleware = validate(schema, 'query');
 
-      await middleware(req as Request, {} as any, next);
+      await middleware(req as Request, {} as Response, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(ClientError));
     });
@@ -105,7 +105,7 @@ describe('validate middleware', () => {
 
       const middleware = validate(schema, 'params');
 
-      await middleware(req as Request, {} as any, next);
+      await middleware(req as Request, {} as Response, next);
 
       expect(req.params).toEqual({
         id: 123,
@@ -121,7 +121,7 @@ describe('validate middleware', () => {
 
       const middleware = validate(schema, 'params');
 
-      await middleware(req as Request, {} as any, next);
+      await middleware(req as Request, {} as Response, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(ClientError));
     });
@@ -135,7 +135,7 @@ describe('validate middleware', () => {
 
       const middleware = validate(schema, 'body');
 
-      await middleware(req as Request, {} as any, next);
+      await middleware(req as Request, {} as Response, next);
 
       expect(next).toHaveBeenCalledWith(
         expect.objectContaining({

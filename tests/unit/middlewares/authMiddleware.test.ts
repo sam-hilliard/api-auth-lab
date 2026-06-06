@@ -1,4 +1,4 @@
-import { Request, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { AuthenticationError, AuthorizationError } from '../../../src/errors/AuthError';
@@ -37,15 +37,17 @@ describe('authMiddleware', () => {
     it('throws when JWT_SECRET is not defined', () => {
       delete process.env.JWT_SECRET;
 
-      expect(() => authenticateToken(req as Request, {} as any, next)).toThrow(
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
         'JWT_SECRET is not defined',
       );
     });
 
     it('throws AuthenticationError when authorization header is missing', () => {
-      expect(() => authenticateToken(req as Request, {} as any, next)).toThrow(AuthenticationError);
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
+        AuthenticationError,
+      );
 
-      expect(() => authenticateToken(req as Request, {} as any, next)).toThrow(
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
         'Access token required',
       );
     });
@@ -55,7 +57,9 @@ describe('authMiddleware', () => {
         authorization: 'Basic abc123',
       };
 
-      expect(() => authenticateToken(req as Request, {} as any, next)).toThrow(AuthenticationError);
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
+        AuthenticationError,
+      );
     });
 
     it('throws AuthenticationError when jwt.verify throws', () => {
@@ -67,9 +71,11 @@ describe('authMiddleware', () => {
         throw new Error('jwt expired');
       });
 
-      expect(() => authenticateToken(req as Request, {} as any, next)).toThrow(AuthenticationError);
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
+        AuthenticationError,
+      );
 
-      expect(() => authenticateToken(req as Request, {} as any, next)).toThrow(
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
         'Invalid or expired token',
       );
     });
@@ -81,11 +87,13 @@ describe('authMiddleware', () => {
 
       mockedVerify.mockReturnValue({
         invalid: 'payload',
-      } as any);
+      } as unknown as void);
 
-      expect(() => authenticateToken(req as Request, {} as any, next)).toThrow(AuthenticationError);
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
+        AuthenticationError,
+      );
 
-      expect(() => authenticateToken(req as Request, {} as any, next)).toThrow(
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
         'Invalid token payload',
       );
     });
@@ -100,14 +108,32 @@ describe('authMiddleware', () => {
         username: 'testuser',
       };
 
-      mockedVerify.mockReturnValue(payload as any);
+      mockedVerify.mockReturnValue(payload as unknown as void);
 
-      authenticateToken(req as Request, {} as any, next);
+      authenticateToken(req as Request, {} as Response, next);
 
       expect(mockedVerify).toHaveBeenCalledWith('valid-token', 'test-secret');
 
       expect(req.user).toEqual(payload);
       expect(next).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles non-Error thrown from jwt.verify', () => {
+      req.headers = {
+        authorization: 'Bearer invalid-token',
+      };
+
+      mockedVerify.mockImplementation(() => {
+        throw 'something weird';
+      });
+
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
+        AuthenticationError,
+      );
+
+      expect(() => authenticateToken(req as Request, {} as Response, next)).toThrow(
+        'Invalid or expired token',
+      );
     });
   });
 
@@ -119,10 +145,11 @@ describe('authMiddleware', () => {
         },
         user: {
           id: 123,
+          username: 'testuser',
         },
-      } as any;
+      };
 
-      authorizeSelf(req as Request, {} as any, next);
+      authorizeSelf(req as Request, {} as Response, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(AuthorizationError));
 
@@ -138,10 +165,11 @@ describe('authMiddleware', () => {
         },
         user: {
           id: 123,
+          username: 'testuser',
         },
-      } as any;
+      };
 
-      authorizeSelf(req as Request, {} as any, next);
+      authorizeSelf(req as Request, {} as Response, next);
 
       expect(next).toHaveBeenCalledTimes(1);
       expect(next).toHaveBeenCalledWith();

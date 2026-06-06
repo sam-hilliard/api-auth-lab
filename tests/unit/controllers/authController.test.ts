@@ -16,6 +16,16 @@ const mockedSignup = jest.mocked(signup);
 const mockedBuildAuthResponse = jest.mocked(buildAuthResponse);
 
 describe('authController', () => {
+  const user = {
+    id: 1,
+    username: 'testuser',
+  };
+
+  const authResponse = {
+    authToken: 'jwt-token',
+    ...user,
+  };
+
   let req: Partial<Request>;
   let res: Partial<Response>;
 
@@ -37,18 +47,8 @@ describe('authController', () => {
 
   describe('loginUser', () => {
     it('returns auth response when credentials are valid', async () => {
-      const user = {
-        id: 1,
-        username: 'testuser',
-      };
-
-      const authResponse = {
-        token: 'jwt-token',
-        user,
-      };
-
-      mockedLogin.mockResolvedValue(user as any);
-      mockedBuildAuthResponse.mockReturnValue(authResponse as any);
+      mockedLogin.mockResolvedValue(user);
+      mockedBuildAuthResponse.mockReturnValue(authResponse);
 
       await loginUser(req as Request, res as Response, jest.fn());
 
@@ -75,18 +75,8 @@ describe('authController', () => {
 
   describe('signUpUser', () => {
     it('returns auth response when signup succeeds', async () => {
-      const user = {
-        id: 1,
-        username: 'testuser',
-      };
-
-      const authResponse = {
-        token: 'jwt-token',
-        user,
-      };
-
-      mockedSignup.mockResolvedValue(user as any);
-      mockedBuildAuthResponse.mockReturnValue(authResponse as any);
+      mockedSignup.mockResolvedValue(user);
+      mockedBuildAuthResponse.mockReturnValue(authResponse);
 
       await signUpUser(req as Request, res as Response, jest.fn());
 

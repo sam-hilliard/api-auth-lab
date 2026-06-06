@@ -19,8 +19,9 @@ describe('requireCreator', () => {
       },
       user: {
         id: 789,
+        username: 'testuser',
       },
-    } as any;
+    };
 
     res = {
       status: jest.fn().mockReturnThis(),

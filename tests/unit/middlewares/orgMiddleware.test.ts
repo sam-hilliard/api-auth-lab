@@ -32,8 +32,9 @@ describe('org middleware', () => {
       },
       user: {
         id: 123,
+        username: 'testuser',
       },
-    } as any;
+    };
 
     res = {
       status: jest.fn().mockReturnThis(),
@@ -76,7 +77,7 @@ describe('org middleware', () => {
         name: 'Test Org',
       };
 
-      mockedGetOrg.mockResolvedValue(org as any);
+      mockedGetOrg.mockResolvedValue(org as unknown as Response);
 
       await requireOrg(req as Request, res as Response, next);
 
@@ -147,7 +148,7 @@ describe('org middleware', () => {
       mockedFindUserByUsername.mockResolvedValue({
         id: 999,
         username: 'john',
-      } as any);
+      });
 
       mockedIsMemberExists.mockResolvedValue(false);
 
@@ -163,7 +164,7 @@ describe('org middleware', () => {
       mockedFindUserByUsername.mockResolvedValue({
         id: 999,
         username: 'john',
-      } as any);
+      });
 
       mockedIsMemberExists.mockResolvedValue(true);
       mockedIsOwner.mockResolvedValue(true);
@@ -182,7 +183,7 @@ describe('org middleware', () => {
         username: 'john',
       };
 
-      mockedFindUserByUsername.mockResolvedValue(user as any);
+      mockedFindUserByUsername.mockResolvedValue(user);
       mockedIsMemberExists.mockResolvedValue(true);
       mockedIsOwner.mockResolvedValue(false);
 

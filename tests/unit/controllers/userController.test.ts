@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { getUserById } from '../../../src/controllers/userController';
 import { findUserById } from '../../../src/repositories/userRepository';
 
@@ -8,7 +9,7 @@ jest.mock('../../../src/repositories/userRepository', () => ({
 const mockFindUserById = findUserById as jest.Mock;
 
 function mockResponse() {
-  const res: any = {};
+  const res = {} as Response;
   res.status = jest.fn().mockReturnValue(res);
   res.json = jest.fn().mockReturnValue(res);
   return res;
@@ -20,7 +21,7 @@ describe('getUserById', () => {
   });
 
   it('returns user when found', async () => {
-    const req: any = {
+    const req = {
       params: { id: '1' },
     };
 
@@ -29,7 +30,7 @@ describe('getUserById', () => {
     const fakeUser = { id: 1, name: 'Alice' };
     mockFindUserById.mockResolvedValue(fakeUser);
 
-    await getUserById(req, res, jest.fn());
+    await getUserById(req as unknown as Request, res, jest.fn());
 
     expect(mockFindUserById).toHaveBeenCalledWith(1);
     expect(res.json).toHaveBeenCalledWith(fakeUser);
@@ -37,7 +38,7 @@ describe('getUserById', () => {
   });
 
   it('returns 404 when user not found', async () => {
-    const req: any = {
+    const req = {
       params: { id: '999' },
     };
 
@@ -45,7 +46,7 @@ describe('getUserById', () => {
 
     mockFindUserById.mockResolvedValue(null);
 
-    await getUserById(req, res, jest.fn());
+    await getUserById(req as unknown as Request, res, jest.fn());
 
     expect(mockFindUserById).toHaveBeenCalledWith(999);
     expect(res.status).toHaveBeenCalledWith(404);

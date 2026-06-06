@@ -14,6 +14,7 @@ import {
   updateDocument,
   deleteDocument,
 } from '../../../src/repositories/documentRepository';
+import { Document } from '../../../src/types/documentTypes';
 
 jest.mock('../../../src/repositories/documentRepository');
 
@@ -39,8 +40,9 @@ describe('documentController', () => {
       },
       user: {
         id: 123,
+        username: 'testuser',
       },
-    } as any;
+    };
 
     res = {
       status: jest.fn().mockReturnThis(),
@@ -57,7 +59,7 @@ describe('documentController', () => {
         { id: 2, title: 'Doc 2' },
       ];
 
-      mockedGetDocumentsByOrg.mockResolvedValue(docs as any);
+      mockedGetDocumentsByOrg.mockResolvedValue(docs);
 
       await getOrgDocs(req as Request, res as Response);
 
@@ -74,7 +76,7 @@ describe('documentController', () => {
         title: 'Doc 2',
       };
 
-      mockedGetDocument.mockResolvedValue(doc as any);
+      mockedGetDocument.mockResolvedValue(doc as unknown as Document);
 
       await getDocById(req as Request, res as Response);
 
@@ -92,7 +94,7 @@ describe('documentController', () => {
         content: 'Test Content',
       };
 
-      mockedInsertDocument.mockResolvedValue(createdDoc as any);
+      mockedInsertDocument.mockResolvedValue(createdDoc);
 
       await createDocument(req as Request, res as Response);
 
@@ -111,7 +113,7 @@ describe('documentController', () => {
         content: 'Updated Content',
       };
 
-      mockedUpdateDocument.mockResolvedValue(updatedDoc as any);
+      mockedUpdateDocument.mockResolvedValue(updatedDoc as unknown as Document);
 
       await patchDocument(req as Request, res as Response);
 
