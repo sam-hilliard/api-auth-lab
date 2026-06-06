@@ -6,6 +6,7 @@ import { errorHandler } from './middlewares/errorMiddleware';
 import authRoutes from './routes/authRoutes';
 import orgRoutes from './routes/orgRoutes';
 import userRoutes from './routes/userRoutes';
+import { apiRateLimit } from './middlewares/rateLimitMiddleware';
 
 const app = express();
 
@@ -20,6 +21,9 @@ app.use(express.json());
 
 // logging
 app.use(morgan('combined'));
+
+// rate limiting
+app.use(apiRateLimit);
 
 // public routes
 app.get('/api/health', (_req, res) => {
