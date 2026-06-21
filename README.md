@@ -78,4 +78,4 @@ TBD
 ## Documentation
 
 * [Threat Model](docs/threatmodel.md)
-* [API Spec](docs/swagger.yaml)
+* [API Spec](docs/swagger.yml)
