@@ -1,14 +1,19 @@
-Got it — here’s a more concise, cleaner version with minimal styling and no emoji overload.
-
----
-
 # Intentionally Vulnerable API
 
 An intentionally vulnerable API built with Node.js, Express, and TypeScript for practicing secure coding, vulnerability detection, and defensive engineering.
 
-> **Warning:** This project contains known security vulnerabilities and should not be deployed in production or exposed publicly.
+> **Warning**
+>
+> This project contains known security vulnerabilities and should **not** be deployed in production or exposed publicly.
 
----
+## Table of Contents
+
+* [Purpose](#purpose)
+* [Tech Stack](#tech-stack)
+* [Security Features](#security-features-baseline-hardening)
+* [Project Structure](#project-structure)
+* [Vulnerabilities](#vulnerabilities)
+* [Documentation](#documentation)
 
 ## Purpose
 
@@ -18,8 +23,6 @@ This project is intended for:
 * Learning secure coding patterns in Express/TypeScript applications
 * Security testing in a controlled environment
 * Teaching and training purposes
-
----
 
 ## Tech Stack
 
@@ -32,9 +35,7 @@ This project is intended for:
 * Helmet (security headers)
 * Rate limiting middleware
 * ESLint + Prettier
-* Husky (git hooks)
-
----
+* Husky (Git hooks)
 
 ## Security Features (Baseline Hardening)
 
@@ -48,38 +49,33 @@ The project includes baseline security practices alongside intentional flaws:
 * Linting and formatting enforcement
 * Pre-commit hooks via Husky
 
----
-
 ## Project Structure
 
-```bash
+```text
 ├── src
-│   ├── config
-│   ├── controllers
-│   ├── db
-│   ├── errors
-│   ├── middlewares
-│   ├── models
-│   ├── repositories
-│   ├── routes
-│   ├── schemas
-│   ├── services
-│   ├── types
-│   └── utils
+│   ├── config
+│   ├── controllers
+│   ├── db
+│   ├── errors
+│   ├── middlewares
+│   ├── models
+│   ├── repositories
+│   ├── routes
+│   ├── schemas
+│   ├── services
+│   ├── types
+│   └── utils
 └── tests
     ├── helpers
     ├── it
     └── unit
 ```
 
----
-
 ## Vulnerabilities
 
 TBD
 
----
+## Documentation
 
-## Threat Model
-
-TBD
+* [Threat Model](docs/threatmodel.md)
+* [API Spec](docs/swagger.yaml)
